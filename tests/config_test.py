@@ -20,8 +20,8 @@ class ConfigBaseTest(unittest.TestCase):
 
         # for test 1
         self.databaseSourceConfig: dict = self.config.getSectionConfig(__SECTION1)
-        self.__databaseName: str = self.databaseSourceConfig['database.dbname']
-        self.__databaseIp: str = self.databaseSourceConfig['database.ip']
+        self.__databaseName: str = self.databaseSourceConfig['database.scheme.name']
+        self.__databaseIp: str = self.databaseSourceConfig['database.connection.ip']
 
         # for test 2
         self.fileSourceConfig: dict = self.config.getSectionConfig(__SECTION2)

@@ -5,9 +5,7 @@ class Config(AbstractConfig):
 
     def __init__(self):
         super().__init__()
-
-    def locateConfigProperties(self):
-        pass
+        self.parser.read(AbstractConfig.configPropertiesFile)
 
     def doSomething(self):
         print("doSomething")

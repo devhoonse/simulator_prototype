@@ -34,10 +34,8 @@ class AbstractConfig(metaclass=ABCMeta):
         instationPath, 'Config.properties'
     )
 
-
     def __init__(self):
         self.parser: configparser.RawConfigParser = configparser.RawConfigParser()
-        self.parser.read(AbstractConfig.configPropertiesFile)
 
     def getSectionConfig(self, sectionName: str):
         return dict(self.parser.items(section=sectionName))

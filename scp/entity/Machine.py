@@ -19,5 +19,5 @@ class Machine(object):
     def do_something(self):
         pass
 
-    def do_my_thang(self):
+    def do_something_else(self):
         pass

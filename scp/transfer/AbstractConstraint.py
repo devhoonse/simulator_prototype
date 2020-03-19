@@ -14,6 +14,9 @@ class AbstractConstraint(metaclass=ABCMeta):
     # Constraint 클래스를 상속받는 자손 클래스들이 공유할 Static 변수들
     staticVar: object = None
 
+    # Constraint 클래스 Static Constants
+    CONSTANT_VARIABLE: object = None
+
     def __init__(self):
         """
         생성자 : Constraint 클래스를 상속받는 자손 클래스들이 공통으로 가질 멤버 변수들
@@ -32,3 +35,18 @@ class AbstractConstraint(metaclass=ABCMeta):
     @abstractmethod
     def do_my_thang(self):
         pass
+
+    def get_private_var(self):
+        """
+        Private Variable Getter
+        :return: self._privateVar.__class__
+        """
+        return self._privateVar
+
+    def set_private_var(self, value: object):
+        """
+        Private Variable Value Setter
+        :param value: self._privateVar.__class__
+        :return: void
+        """
+        self._privateVar = value

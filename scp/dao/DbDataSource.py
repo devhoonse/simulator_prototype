@@ -3,18 +3,24 @@ import os
 import cx_Oracle
 
 from scp.dao.AbstractDataSource import AbstractDataSource
-from scp.util.Config import Config
 
 
 class DbDataSource(AbstractDataSource):
+    """
+    Database Data Source
+    Database (Oracle) Connection 담당 클래스
+    """
 
-    # Static 변수 : 뉴로코어 소스에 있는 것들인데 불필요 한 듯
-    START_VALUE = u"Unicode \u3042 3".encode('utf-8')
-    END_VALUE = u"Unicode \u3042 6".encode('utf-8')
+    # Static Variables
+    staticVar2: object = None                           # Comment
+
+    # Static Constants : 뉴로코어 소스에 있는 것들인데 불필요 한 듯
+    START_VALUE = u"Unicode \u3042 3".encode('utf-8')   # Comment
+    END_VALUE = u"Unicode \u3042 6".encode('utf-8')     # Comment
 
     def __init__(self):
         """
-        DB (Oracle) Connection 담당 클래스
+        생성자 : DbDataSource 클래스 멤버 변수들
         """
 
         # Oracle Database 언어 설정
@@ -24,19 +30,21 @@ class DbDataSource(AbstractDataSource):
         super().__init__()
 
         # Config.properties 파일에서 DB 접속 관련 설정 값들 가져오기
-        self.connectionConfig = self._get_connection_config()     # 예시
+        self.connectionConfig = self._get_connection_config()   # Comment
 
         # DbDataSource 클래스에만 있는 변수
 
-        # Public 변수들
+        # 1. Public
 
-        # Protected 변수들
+        # 2. Private
+
         # Oracle TNS
         self._tns: str = cx_Oracle.makedsn(
             ip=self.connectionConfig['database.connection.ip'],
             port=self.connectionConfig['database.connection.port'],
             sid=self.connectionConfig['database.connection.sid']
         )
+
         # Oracle Session Pool
         self._pool: cx_Oracle.SessionPool = cx_Oracle.SessionPool(
             user=self.connectionConfig['database.scheme.user'],
@@ -46,32 +54,32 @@ class DbDataSource(AbstractDataSource):
 
     # Public 메서드
 
-    def GetDbData(self, sql: str, params: tuple = ()):
+    def get_db_data(self, sql: str, params: tuple = ()):
         """
         DB 로부터 Query문 결과 Array를 가져오는 처리.
         뉴로코어 방식 vs resource .sql 파일 내용을 문자열로 받아다 줄 지 ??
         :param sql:
         :param params:
-        :return:
+        :return: Array-like Object  ex: pandas.DataFrame / list<list> / ...
         """
         pass
 
-    def ExecuteProc(self, procNm: str, params: tuple = ()):
+    def execute_proc(self, process_name: str, params: tuple = ()):
         """
         DB 에 저장된 프로시져를 호출하는 처리.
-        :param procNm:
+        :param process_name:
         :param params:
-        :return:
+        :return: void
         """
         pass
 
-    def BatchQuery(self, sqlTemplate: str, dataArr: list, sqlDel: str = ""):
+    def batch_query(self, sql_template: str, data_arr: list, sql_del: str = ""):
         """
         CRUD 쿼리문을 실행하는 처리
-        :param sqlTemplate:
-        :param dataArr:
-        :param sqlDel:
-        :return:
+        :param sql_template:
+        :param data_arr:
+        :param sql_del:
+        :return: void
         """
         pass
 
@@ -83,12 +91,12 @@ class DbDataSource(AbstractDataSource):
         Question 생성자에서 한 번만 호출되도록 ??
         :return: dict ?
         """
-        pass
+        return super()._get_connection_config()
 
     def _get_connection(self):
         """
         Oracle Session Pool 을 통해 DB와의 실제 Connection 체결 처리
-        :return: cx_Oracle.Connection ?
+        :return: cx_Oracle.Connection
         """
         return self._pool.acquire()
 

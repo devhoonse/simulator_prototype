@@ -2,10 +2,13 @@
 from abc import *
 
 
-class AbstractWarehouse(metaclass=ABCMeta):
+class AbstractTransfer(metaclass=ABCMeta):
 
     varOne: object = ""
     varTwo: object = ""
+
+    def __init__(self):
+        self.memberVar1: object = None
 
     @abstractmethod
     def doSomething(self):

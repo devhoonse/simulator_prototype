@@ -1,13 +1,12 @@
-from abstract.manager.AbstractScheduleSimulator import AbstractScheduleSimulator
 
 
-class ScheduleSimulator(AbstractScheduleSimulator):
+class ScheduleSimulator(object):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

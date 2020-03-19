@@ -1,9 +1,10 @@
-from abstract.dao.AbstractDataSource import AbstractDataSource
+from scp.dao.AbstractDataSource import AbstractDataSource
 
 
 class FileDataSource(AbstractDataSource):
 
     def __init__(self):
+        super().__init__()
         pass
 
     def doSomething(self):

@@ -1,15 +1,14 @@
 
-from abstract.manager.AbstractTimer import AbstractTimer
-from abstract.entity.AbstractProcessLot import AbstractProcessLot
+from scp.manager.AbstractTimer import AbstractTimer
 
 
-class Lot(AbstractTimer, AbstractProcessLot):
+class Lot(AbstractTimer):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

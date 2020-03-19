@@ -1,13 +1,12 @@
-from abstract.transfer.AbstractBom import AbstractBom
 
 
-class Bom(AbstractBom):
+class Bom(object):
 
     def __init__(self):
-        pass
+        self.memberVar1: object = None
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

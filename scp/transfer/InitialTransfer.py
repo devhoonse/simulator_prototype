@@ -1,10 +1,10 @@
-from abstract.transfer.AbstarctTransfer import AbstractTransfer
+from scp.transfer.AbstarctTransfer import AbstractTransfer
 
 
 class InitialTransfer(AbstractTransfer):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
         super().doSomething()

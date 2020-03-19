@@ -1,13 +1,12 @@
-from abstract.process.AbstractDemand import AbstractDemand
 
 
-class Demand(AbstractDemand):
+class Demand(object):
 
     def __init__(self):
-        pass
+        self.memberVar1: object = None
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

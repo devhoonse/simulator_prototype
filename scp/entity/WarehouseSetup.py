@@ -1,10 +1,10 @@
-from abstract.entity.AbstractSetupInfo import AbstractSetupInfo
+from scp.entity.AbstractSetup import AbstractSetup
 
 
-class MachineSetupInfo(AbstractSetupInfo):
+class WarehouseSetup(AbstractSetup):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
         super().doSomething()

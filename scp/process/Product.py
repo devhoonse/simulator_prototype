@@ -1,13 +1,12 @@
-from abstract.process.AbstractProduct import AbstractProduct
 
 
-class Process(AbstractProduct):
+class Process(object):
 
     def __init__(self):
-        pass
+        self.memberVar1: object = None
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

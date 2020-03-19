@@ -1,18 +1,46 @@
-from abstract.util.AbstractConfig import AbstractConfig
+
+import os
+import configparser
 
 
-class Config(AbstractConfig):
+class Config(object):
+    """
+
+    """
+
+    ####################
+    # Static Variables #
+    ####################
+
+    # Installation Path
+    instationPath: str = \
+        os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(__file__)
+            )
+        )
+
+    # Abstract Class Files Directory
+    abstractPath: str = os.path.join(
+        instationPath, 'abstract'
+    )
+
+    # SCP Simulator Class Files Directory
+    scpPath: str = os.path.join(
+        instationPath, 'scp'
+    )
+
+    # Config.properties file Path
+    configPropertiesFile: str = os.path.join(
+        instationPath, 'Config.properties'
+    )
 
     def __init__(self):
-        super().__init__()
-        self.parser.read(AbstractConfig.configPropertiesFile)
+        self.parser: configparser.RawConfigParser = configparser.RawConfigParser()
+        self.parser.read(Config.configPropertiesFile)
 
-    def doSomething(self):
-        print("doSomething")
-        super().doSomething()
-        print("doSomething2")
+    def __del__(self):
+        self.parser.clear()
 
-    def doMyThang(self):
-        print("doMyThang")
-        super().doMyThang()
-        print("doMyThang2")
+    def getSectionConfig(self, sectionName: str):
+        return dict(self.parser.items(section=sectionName))

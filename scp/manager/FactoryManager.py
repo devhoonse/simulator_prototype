@@ -1,13 +1,12 @@
-from abstract.manager.AbstractFactoryManager import AbstractFactoryManager
 
 
-class FactoryManager(AbstractFactoryManager):
+class FactoryManager(object):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

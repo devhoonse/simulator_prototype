@@ -2,10 +2,13 @@
 from abc import *
 
 
-class AbstractSetupInfo(metaclass=ABCMeta):
+class AbstractSetup(metaclass=ABCMeta):
 
     varOne: object = ""
     varTwo: object = ""
+
+    def __init__(self):
+        pass
 
     @abstractmethod
     def doSomething(self):

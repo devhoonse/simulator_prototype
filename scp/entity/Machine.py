@@ -1,13 +1,12 @@
-from abstract.entity.AbstractMachine import AbstractMachine
 
 
-class Machine(AbstractMachine):
+class Machine(object):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

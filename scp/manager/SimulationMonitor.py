@@ -1,13 +1,12 @@
-from abstract.manager.AbstractSimulationMonitor import AbstractSimulationMonitor
 
 
-class SimulationMonitor(AbstractSimulationMonitor):
+class SimulationMonitor(object):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

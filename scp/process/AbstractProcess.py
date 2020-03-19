@@ -2,10 +2,13 @@
 from abc import *
 
 
-class AbstractBom(metaclass=ABCMeta):
+class AbstractProcess(metaclass=ABCMeta):
 
     varOne: object = ""
     varTwo: object = ""
+
+    def __init__(self):
+        self.memberVar1: object = None
 
     @abstractmethod
     def doSomething(self):

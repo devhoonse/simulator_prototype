@@ -1,15 +1,14 @@
 
-from abstract.manager.AbstractTimer import AbstractTimer
-from abstract.entity.AbstractSetup import AbstractSetup
+from scp.manager.AbstractTimer import AbstractTimer
 
 
-class Setup(AbstractTimer, AbstractSetup):
+class Setup(AbstractTimer):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

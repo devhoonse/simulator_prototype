@@ -1,10 +1,10 @@
-from abstract.process.AbstractProcess import AbstractProcess
+from scp.process.AbstractProcess import AbstractProcess
 
 
 class Process(AbstractProcess):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
         super().doSomething()

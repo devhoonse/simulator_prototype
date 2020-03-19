@@ -1,13 +1,12 @@
-from abstract.manager.AbstractFactoryBuilder import AbstractFactoryBuilder
 
 
-class FactoryBuilder(AbstractFactoryBuilder):
+class FactoryBuilder(object):
 
     def __init__(self):
         pass
 
     def doSomething(self):
-        super().doSomething()
+        pass
 
     def doMyThang(self):
-        super().doMyThang()
+        pass

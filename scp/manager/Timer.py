@@ -1,10 +1,10 @@
-from abstract.manager.AbstractTimer import AbstractTimer
+from scp.manager.AbstractTimer import AbstractTimer
 
 
 class Timer(AbstractTimer):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
         super().doSomething()

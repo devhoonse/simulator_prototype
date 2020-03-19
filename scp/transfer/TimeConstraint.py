@@ -1,10 +1,10 @@
-from abstract.transfer.AbstractConstraint import AbstractConstraint
+from scp.transfer.AbstractConstraint import AbstractConstraint
 
 
 class TimeConstraint(AbstractConstraint):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     def doSomething(self):
         super().doSomething()

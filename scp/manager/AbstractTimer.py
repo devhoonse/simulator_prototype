@@ -2,10 +2,13 @@
 from abc import *
 
 
-class AbstractCalendar(metaclass=ABCMeta):
+class AbstractTimer(metaclass=ABCMeta):
 
     varOne: object = ""
     varTwo: object = ""
+
+    def __init__(self):
+        pass
 
     @abstractmethod
     def doSomething(self):

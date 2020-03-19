@@ -2,10 +2,13 @@
 from abc import *
 
 
-class AbstractSimulationMonitor(metaclass=ABCMeta):
+class AbstractConstraint(metaclass=ABCMeta):
 
     varOne: object = ""
     varTwo: object = ""
+
+    def __init__(self):
+        self.memberVar1: object = None
 
     @abstractmethod
     def doSomething(self):

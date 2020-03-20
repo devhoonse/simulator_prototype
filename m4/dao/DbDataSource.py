@@ -29,7 +29,7 @@ class DbDataSource(AbstractDataSource):
         # 부모 클래스의 모든 멤버 변수들을 상속
         super().__init__()
 
-        # Config.properties 파일에서 DB 접속 관련 설정 값들 가져오기
+        # m4_default.properties 파일에서 DB 접속 관련 설정 값들 가져오기
         self.connectionConfig = self._get_connection_config()   # Comment
 
         # DbDataSource 클래스에만 있는 변수
@@ -38,17 +38,17 @@ class DbDataSource(AbstractDataSource):
 
         # 2. Private
 
-        # Oracle TNS
+        # Oracle TNS : IP/PORT/SID 등 필요 속성은 Configuration 객체에서 받아오도록
         self._tns: str = cx_Oracle.makedsn(
-            ip=self.connectionConfig['database.connection.ip'],
-            port=self.connectionConfig['database.connection.port'],
-            sid=self.connectionConfig['database.connection.sid']
+            ip="",
+            port="",
+            sid=""
         )
 
-        # Oracle Session Pool
+        # Oracle Session Pool : user/password 등 필요 속성은 Configuration 객체에서 받아오도록
         self._pool: cx_Oracle.SessionPool = cx_Oracle.SessionPool(
-            user=self.connectionConfig['database.scheme.user'],
-            password=self.connectionConfig['database.scheme.pwd'],
+            user="",
+            password="",
             dsn=self._tns
         )
 
@@ -87,7 +87,7 @@ class DbDataSource(AbstractDataSource):
 
     def _get_connection_config(self):
         """
-        Config.properties 파일로부터 (DB) 관련 설정 값들 받아오는 처리
+        m4_default.properties 파일로부터 (DB) 관련 설정 값들 받아오는 처리
         Question 생성자에서 한 번만 호출되도록 ??
         :return: dict ?
         """

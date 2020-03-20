@@ -31,7 +31,7 @@ class AbstractDataSource(metaclass=ABCMeta):
     @abstractmethod
     def _get_connection_config(self):
         """
-        Config.properties 파일로부터 데이터 소스 와의 연결 정보를 취득
+        m4_default.properties 파일로부터 데이터 소스 와의 연결 정보를 취득
         취득해 오는 정보는 데이터 소스에 따라 다름
             DbDataSource    - Database 접속 관련 설정 값들     : IP, Port, SID, User, Pwd 등
             FileDataSource  - FileSystem 접속 관련 설정 값들   : 현재 패키지가 설치된 로컬 환경 내에 있는 파일 경로

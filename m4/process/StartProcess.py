@@ -1,3 +1,4 @@
+from m4.dao.DemandDao import DemandDao
 from m4.process.AbstractProcess import AbstractProcess
 
 
@@ -22,6 +23,7 @@ class StartProcess(AbstractProcess):
         super().__init__()
 
         # 1. Public
+        self.demand: DemandDao = None   # Demand 데이터
 
         # 2. Private
 

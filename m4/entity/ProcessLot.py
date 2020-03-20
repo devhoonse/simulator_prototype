@@ -1,4 +1,7 @@
 
+from m4.manager.AbstractTimer import AbstractTimer
+from m4.entity.Lot import Lot
+
 
 class ProcessLot(object):
     """
@@ -10,26 +13,31 @@ class ProcessLot(object):
     """
 
     # Static Variables
-    staticVar2: object = None  # Comment
+    staticVar2: object = None               # Comment
 
     # Static Constants
-    CONSTANT_VARIABLE2: object = None  # Comment
+    CONSTANT_VARIABLE2: object = None       # Comment
 
     def __init__(self):
         """
-
+        생성자 :
         """
-
-        # 1. AbstractTimer 클래스에 정의된 멤버 변수들을 상속
-        super().__init__()
 
         # 2-1. Public
         self.publicVar: object = None       # Comment
 
         # 2-2. Private
-        self._privateVar: object = None     # Comment
+        self._setup: AbstractTimer = None   # Machine 의 SetupType 변경 시 소요되는 시간을 구현
+        self._lot: Lot = None               # Machine 이 현재 처리 중인 Lot. 없으면 None
 
-    def do_something_else(self):
+    def do_something(self):
+        """
+        Write a New Code for this Method and Comment Here
+        :return: void
+        """
+        pass
+
+    def _do_my_thang(self):
         """
         Write a New Code for this Method and Comment Here
         :return: void

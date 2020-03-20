@@ -13,10 +13,10 @@ class AbstractConstraint(metaclass=ABCMeta):
     """
 
     # Constraint 클래스를 상속받는 자손 클래스들이 공유할 Static 변수들
-    staticVar: object = None
+    staticVar: object = None                # Comment
 
     # Constraint 클래스 Static Constants
-    CONSTANT_VARIABLE: object = None
+    CONSTANT_VARIABLE: object = None        # Comment
 
     def __init__(self):
         """
@@ -24,10 +24,10 @@ class AbstractConstraint(metaclass=ABCMeta):
         """
 
         # 1. Public
-        self.memberVar1: object = None
+        self.memberVar1: object = None      # Comment
 
         # 2. Private
-        self._privateVar: object = None
+        self._privateVar: object = None     # Comment
 
     @abstractmethod
     def set_constraint(self):

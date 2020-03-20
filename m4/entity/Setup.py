@@ -10,21 +10,21 @@ class Setup(AbstractTimer):
     """
 
     # Static Variables
-    staticVar2: object = None  # Comment
+    staticVar2: object = None           # Comment
 
     # Static Constants
-    CONSTANT_VARIABLE2: object = None  # Comment
+    CONSTANT_VARIABLE2: object = None   # Comment
 
     def __init__(self):
         """
-
+        생성자 :
         """
 
         # 1. AbstractTimer 클래스에 정의된 멤버 변수들을 상속
         super().__init__()
 
         # 2-1. Public
-        self.publicVar: object = None  # Comment
+        self.publicVar: object = None   # Comment
 
         # 2-2. Private
         self._privateVar: object = None  # Comment

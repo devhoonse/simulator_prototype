@@ -4,9 +4,9 @@ from abc import *
 
 class AbstractSetup(metaclass=ABCMeta):
     """
-    Machine, Warehouse 인스턴스에 종속되는 Setup 정보
-        MachineSetup    - Machie Entity에 종속되는 정보
-        WarehouseSetup  - Warehouse Entity에 종속되는 정보
+    Machine, Warehouse 인스턴스에 종속되는 작업 관련 정보
+        MachineSetup    - Machie 작업 관련 정보
+        WarehouseSetup  - Warehouse 작업 관련 정보
     """
 
     # Setup 클래스를 상속받는 자손 클래스들이 공유할 Static 변수들
@@ -31,7 +31,7 @@ class AbstractSetup(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def do_my_thang(self):
+    def _do_my_thang(self):
         pass
 
     def get_private_var(self):

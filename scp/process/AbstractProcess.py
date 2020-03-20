@@ -26,7 +26,7 @@ class AbstractProcess(metaclass=ABCMeta):
         """
 
         # 1. Public
-        self.processId: str = ""                        #
+        self.processId: str = ""                        # Process ID
 
         # 2. Private
         self._fromTransfer: AbstractTransfer = None     # The Transfer Object which Gives a New Lot to this Process
@@ -56,6 +56,16 @@ class AbstractProcess(metaclass=ABCMeta):
         Assign a New Job from Transfer to an Currently Available Entity
         :param entity: Warehouse or Machine Instance
         :return: void
+        """
+        pass
+
+    @abstractmethod
+    def leave_lot(self):
+        """
+        작업이 끝난 Lot 들을 내보내는 처리.
+        내보낸 Lot 들은 현재 Process 내에서 삭제되며,
+        동시에 다음 Process 로의 전달을 위해 Transfer 객체가 받아감
+        :return: list<Lot>
         """
         pass
 

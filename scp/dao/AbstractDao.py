@@ -11,10 +11,10 @@ class AbstractDao(metaclass=ABCMeta):
         FactoryDao  : Factory 관련 정보 데이터를 보관    (Routing, BOD, BOM, PS 등)
     """
 
-    # Dao 클래스를 상속받는 자손 클래스들이 공유할 Static 변수들
+    # Dao 클래스 Static 변수들
     staticVar: object = None                # Comment
 
-    # Dao 클래스 Static Constants
+    # Dao 클래스 Static 상수들
     CONSTANT_VARIABLE: object = None        # Comment
 
     def __init__(self):

@@ -17,12 +17,14 @@ class FileDataSource(AbstractDataSource):
         """
         생성자 : FileDataSource 클래스 멤버 변수들
         """
+
+        # 1. Data Source 클래스의 모든 멤버 변수들을 상속
         super().__init__()
 
-        # 1. Public
+        # 2-1. Public
         self.connectionConfig: dict = self._get_connection_config()     # 접속 관련 설정 값들을 보관하기 위한 Dictionary
 
-        # 2. Private
+        # 2-2. Private
         self._privateVar: object = None     # Comment
 
     def get_io_buffer_data(self):
@@ -34,7 +36,7 @@ class FileDataSource(AbstractDataSource):
 
     def write_io_buffer_data(self, out_file: str = ""):
         """
-        Write Out the Data to File
+        Write Out the Data to File on Local Disk
         :param out_file: Output File Path
         :return: void
         """

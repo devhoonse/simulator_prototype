@@ -6,7 +6,8 @@ class AbstractConstraint(metaclass=ABCMeta):
     """
     각종 제약 조건들의 처리를 담당하는 Constraint 클래스 들의 상위 클래스
     이벤트를 관장하는 Transfer 인스턴스가 이벤트를 결정할 때 참고하도록
-    처리할 제약 조건의 종류에 따라 Constraint 클래스가 구분됨
+    각 Transfer 인스턴스에 종속되어 있으며,
+    고려할 제약 조건의 종류에 따라 Constraint 클래스가 구분됨
         - CapaConstraint    : Capacity (일별 보관 가능량 혹은 처리 가능량)에 관한 제약을 담당
         - TimeConstraint    : Time (가동 불가 시간 등)에 관한 제약을 담당
     """
@@ -29,11 +30,7 @@ class AbstractConstraint(metaclass=ABCMeta):
         self._privateVar: object = None
 
     @abstractmethod
-    def do_something(self):
-        pass
-
-    @abstractmethod
-    def do_my_thang(self):
+    def set_constraint(self):
         pass
 
     def get_private_var(self):

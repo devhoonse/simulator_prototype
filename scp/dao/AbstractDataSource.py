@@ -56,8 +56,8 @@ class AbstractDataSource(metaclass=ABCMeta):
         DataSource 와의 접속을 해제
         해제되는 접속은 데이터 소스에 따라 다름
             DbDataSource    - cx_Oracle.SessionPool.release( cx_Oracle.Connection )
-            FileDataSource  - _io.TextIOWrapper.close()
-        :param connection: Connection 인스턴스  ex: cx_Oracle.SessionPool / _io.TextIOWrapper
+            FileDataSource  - _io._IOBase.close()
+        :param connection: Connection 인스턴스  ex: cx_Oracle.SessionPool / _io._IOBase
         :return: void
         """
         pass

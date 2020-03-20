@@ -1,6 +1,6 @@
 
 
-class Constraint(object):
+class Optimizer(object):
 
     def __init__(self):
         self.memberVar1: object = None

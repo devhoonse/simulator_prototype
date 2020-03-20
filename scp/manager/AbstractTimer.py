@@ -24,14 +24,14 @@ class AbstractTimer(metaclass=ABCMeta):
         """
 
         # 1. Public
-        self.duration: object = 0.0         # Duration 길이를 의미 : Type ?
-        self.fromTime: object = None        # Duration Tick 차감 시작 시점 : Type ?
-        self.toTime: object = None          # Duration Tick 차감 완료 시점 : Type ?
 
         # 2. Private
-        self._privateVar: object = None     # Comment
+        self._privateVar: object = None     # private 변수 쓰는 법
+        self._duration: object = 0.0        # Duration 길이를 의미 : Type ?
+        self._fromTime: object = None       # Duration Tick 차감 시작 시점 : Type ?
+        self._toTime: object = None         # Duration Tick 차감 완료 시점 : Type ?
 
-    def tick_duration(self):
+    def tick(self):
         """
         Duration 을 1 Tick 만큼 차감하는 처리
         :return: void

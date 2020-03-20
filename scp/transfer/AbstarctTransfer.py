@@ -8,6 +8,8 @@ from scp.entity.Lot import Lot
 class AbstractTransfer(metaclass=ABCMeta):
     """
     시뮬레이션에서 이벤트 발생을 담당하기 위한 상위 Transfer 클래스
+    Process 와 Process 사이에서 Lot 을 전달해 주는 역할,
+    이 때 Transfer 는 자신에게 부여된 Constraint, Recipe, Optimizer 등으로부터 이벤트 내용을 결정
     담당 이벤트 종류에 따라 Transfer 클래스가 구분됨
         - InitialTransfer   : Lot 을 처음 시작지로부터 출발시키는 이벤트를 담당
         - WarehouseTransfer : Initial 과 End 사이 시점에서 Lot 을 Warehouse 로 보내는 이벤트를 담당
@@ -27,18 +29,18 @@ class AbstractTransfer(metaclass=ABCMeta):
         """
 
         # 1. Public
-        self.Id: str = ""
+        self.Id: str = ""                           # Transfer ID
 
         # 2. Private
-        self._fromProcess: AbstractProcess = None   #
+        self._fromProcess: AbstractProcess = None   # Transfer 가 Lot 을 Pick 해오는 Process
         self._finishedLot: Lot = None               #
-        self._toProcess: AbstractProcess = None     #
+        self._toProcess: AbstractProcess = None     # Transfer 가 Pick 된 Lot 을 Assign 할 Process
         self._privateVar: object = None             #
 
     @abstractmethod
     def pick_finished_lot(self):
         """
-
+        이전 Process 에서
         :return: void
         """
         pass

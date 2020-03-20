@@ -29,7 +29,7 @@ class DbDataSource(AbstractDataSource):
         # 부모 클래스의 모든 멤버 변수들을 상속
         super().__init__()
 
-        # m4_default.properties 파일에서 DB 접속 관련 설정 값들 가져오기
+        # m4.properties 파일에서 DB 접속 관련 설정 값들 가져오기
         self.connectionConfig = self._get_connection_config()   # Comment
 
         # DbDataSource 클래스에만 있는 변수
@@ -87,7 +87,7 @@ class DbDataSource(AbstractDataSource):
 
     def _get_connection_config(self):
         """
-        m4_default.properties 파일로부터 (DB) 관련 설정 값들 받아오는 처리
+        m4.properties 파일로부터 (DB) 관련 설정 값들 받아오는 처리
         Question 생성자에서 한 번만 호출되도록 ??
         :return: dict ?
         """

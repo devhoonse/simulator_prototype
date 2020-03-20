@@ -1,7 +1,7 @@
 
 from abc import *
 
-from scp.transfer.AbstarctTransfer import AbstractTransfer
+from m4.transfer.AbstarctTransfer import AbstractTransfer
 
 
 class AbstractProcess(metaclass=ABCMeta):

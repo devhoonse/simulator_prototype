@@ -27,7 +27,7 @@ class Config(object):
 
     # SCP Simulator Class Files Directory
     scpPath: str = os.path.join(
-        instationPath, 'scp'
+        instationPath, 'm4'
     )
 
     # Config.properties file Path

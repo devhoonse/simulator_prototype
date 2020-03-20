@@ -1,4 +1,4 @@
-from scp.transfer.AbstractConstraint import AbstractConstraint
+from m4.transfer.AbstractConstraint import AbstractConstraint
 
 
 class TimeConstraint(AbstractConstraint):

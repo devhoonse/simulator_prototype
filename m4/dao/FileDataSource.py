@@ -1,4 +1,4 @@
-from scp.dao.AbstractDataSource import AbstractDataSource
+from m4.dao.AbstractDataSource import AbstractDataSource
 
 
 class FileDataSource(AbstractDataSource):

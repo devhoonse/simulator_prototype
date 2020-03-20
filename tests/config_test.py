@@ -2,7 +2,7 @@
 import unittest
 
 
-from scp.util.Config import Config
+from m4.util.Config import Config
 
 
 class ConfigBaseTest(unittest.TestCase):

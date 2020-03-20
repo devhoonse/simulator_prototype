@@ -1,10 +1,10 @@
-from scp.dao.AbstractDao import AbstractDao
+from m4.dao.AbstractDao import AbstractDao
 
 
-class DemandDao(AbstractDao):
+class FactoryDao(AbstractDao):
     """
-    Demand Data Access Object
-        : Demand 관련 정보 데이터를 보관
+    Factory Data Access Object
+        : Factory 관련 정보 데이터를 보관 (Routing, BOD, BOM, PS 등)
     """
 
     # Static Variables

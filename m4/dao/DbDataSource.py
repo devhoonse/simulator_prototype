@@ -2,7 +2,7 @@
 import os
 import cx_Oracle
 
-from scp.dao.AbstractDataSource import AbstractDataSource
+from m4.dao.AbstractDataSource import AbstractDataSource
 
 
 class DbDataSource(AbstractDataSource):

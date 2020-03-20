@@ -1,4 +1,4 @@
-from scp.entity.AbstractSetup import AbstractSetup
+from m4.entity.AbstractSetup import AbstractSetup
 
 
 class WarehouseSetup(AbstractSetup):

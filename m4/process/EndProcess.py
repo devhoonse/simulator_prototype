@@ -1,4 +1,4 @@
-from scp.process.AbstractProcess import AbstractProcess
+from m4.process.AbstractProcess import AbstractProcess
 
 
 class EndProcess(AbstractProcess):

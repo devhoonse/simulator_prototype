@@ -1,4 +1,4 @@
-from scp.manager.AbstractTimer import AbstractTimer
+from m4.manager.AbstractTimer import AbstractTimer
 
 
 class Setup(AbstractTimer):

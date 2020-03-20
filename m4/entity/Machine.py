@@ -1,6 +1,6 @@
 
-from scp.entity.Lot import Lot
-from scp.entity.MachineSetup import MachineSetup
+from m4.entity.Lot import Lot
+from m4.entity.MachineSetup import MachineSetup
 
 
 class Machine(object):

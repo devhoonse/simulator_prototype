@@ -71,7 +71,7 @@ class ScheduleSimulator(object):
         number_of_digits: int = math.floor(math.log(self._calendar_len, 10)) + 1
 
         # 시뮬레이션 시작에 앞서, self._runTime 값을 self._calendar 의 가장 첫 시작 값으로 설정
-        self._runTime: dict = self._calendar.get_first_time()
+        self.stand_by()
 
         # 시뮬레이션 종료 여부를 판단하기 위해, 다음 runTime 이 있는 지 확인을 위한 bool 변수 선언
         has_next: bool = True
@@ -81,7 +81,7 @@ class ScheduleSimulator(object):
             if print_flag:                      # print_flag 가 설정되어 있을 경우, 콘솔에 출력
                 idx_string: str = '%0{}d'.format(number_of_digits) % \
                                   self._calendar.get_index(run_time=self._runTime)  # 현재 캘린더의 위치 index
-                print(f"\t{idx_string}"                     # 각 Calendar 번호: int
+                print(f"\t[{idx_string}]"                   # 각 Calendar 번호: int
                       f"\t{self._runTime['DATE']}"          # 각 Calendar 의 날짜 정보: datetime
                       f"\t{self._runTime['WORK_YN']}")      # 각 Calendar 의 업무 가능 여부: bool
 
@@ -114,6 +114,32 @@ class ScheduleSimulator(object):
             self._runTime = next_runtime
 
         return has_next_runtime
+
+    def stand_by(self):
+        """
+        시뮬레이션 시간 진행을 시작하기에 앞서,
+        현재 self._runTime 값을 self._calendar 에 세팅된 시작점으로 세팅하는 처리
+        :return: void
+        """
+
+        # 시뮬레이션 시작에 앞서, self._runTime 값을 self._calendar 의 가장 첫 시작 값으로 설정
+        self._runTime: dict = self._calendar.get_first_time()
+
+    def get_current_run_time(self):
+        """
+        현재 ScheduleSimulator 인스턴스가 실행 중인 _runTime 정보를 반환하는 메서드
+        :return: dict = self._runTime
+        """
+        return self._runTime
+
+    def get_calendar_length(self):
+        """
+        현재 ScheduleSimulator 인스턴스에 등록된 Calendar 에 세팅된
+        self.ScheduleSimulator._fullCalendar (전체 캘린더) 리스트의 갯수를 반환
+        :return: int = 전체 캘린더 갯수
+        """
+        calendar_length: int = self._calendar.get_full_calendar_length()
+        return calendar_length
 
     def _set_start_date(self, start_date: object):
         """

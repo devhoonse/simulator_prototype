@@ -1,8 +1,9 @@
 import os
 import configparser
+from m4.common.SingletonInstance import SingletonInstance
 
 
-class ApplicationConfiguration:
+class ApplicationConfiguration(SingletonInstance):
     """
     어플리케이션 설정 정보
         1. 어플리케이션 설치 정보 : file(m4.properties)

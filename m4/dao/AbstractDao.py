@@ -1,60 +1,39 @@
 
 from abc import *
+from m4.dao.AbstractSession import AbstractSession
 
 
 class AbstractDao(metaclass=ABCMeta):
     """
-    Data Access Object
-    실제 데이터를 들고 있는 클래스
-    들고 있는 데이터의 종류에 따라 다르게 구현
-        DemandDao   : Demand 관련 정보 데이터를 보관     (Demand)
-        FactoryDao  : Factory 관련 정보 데이터를 보관    (Routing, BOD, BOM, PS 등)
+    Data Access Object 추상 클래스
     """
 
-    # Dao 클래스 Static 변수들
-    staticVar: object = None                # Comment
-
-    # Dao 클래스 Static 상수들
-    CONSTANT_VARIABLE: object = None        # Comment
-
-    def __init__(self):
+    @abstractmethod
+    def select_one(self, session: AbstractSession, params: tuple = ()):
         """
-        생성자 : Dao 클래스를 상속받는 자손 클래스들이 공통으로 가질 멤버 변수들
+        세션 인스턴스를 통해 Data Source로부터 1개 데이터를 조회
+        :param session: AbstractSession 인스턴스
+        :param params: sql 파라미터 데이터
+        :return: {"columns" : columns, "data" : list}
         """
-
-        # 1. Public
-        self.memberVar: object = None       # Comment
-
-        # 2. Private
-        self._privateVar: object = None     # Comment
 
     @abstractmethod
-    def set_data(self):
+    def select_list(self, session: AbstractSession, params: tuple = ()):
         """
-        Connection 인스턴스를 통해 get 데이터를 현재 Dao 인스턴스에 세팅하는 처리
-        :return: void
+        세션 인스턴스를 통해 Data Source로부터 리스트 데이터를 조회
+        :param session: AbstractSession 인스턴스
+        :param params: sql 파라미터 데이터
+        :return: {"columns" : columns, "data" : list}
         """
-        pass
 
     @abstractmethod
-    def get_data(self):
+    def execute(self, session: AbstractSession, sql_template: str, data_list: list):
         """
-        현재 Dao 인스턴스에 세팅된 데이터를 반환하는 처리
-        :return: Array-like Object  ex: pandas.DataFrame / list<list> / ...
+        세션 인스턴스를 통해 Data Source에 대한 CUD를 실행
+        :param session: AbstractSession 인스턴스
+        :param sql_template: sql template string
+        :param data_list: CUD 대상 데이터
+        :return: True/False
         """
-        pass
 
-    def get_private_var(self):
-        """
-        Private Variable Getter
-        :return: self._privateVar.__class__
-        """
-        return self._privateVar
 
-    def set_private_var(self, value: object):
-        """
-        Private Variable Value Setter
-        :param value: self._privateVar.__class__
-        :return: void
-        """
-        self._privateVar = value

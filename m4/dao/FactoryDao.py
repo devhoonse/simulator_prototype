@@ -1,37 +1,37 @@
+from m4.common.SingletonInstance import SingletonInstance
 from m4.dao.AbstractDao import AbstractDao
+from m4.dao.AbstractSession import AbstractSession
 
 
-class FactoryDao(AbstractDao):
+class FactoryDao(AbstractDao, SingletonInstance):
     """
     Factory Data Access Object
-        : Factory 관련 정보 데이터를 보관 (Routing, BOD, BOM, PS 등)
     """
 
-    # Static Variables
-    staticVar2: object = None               # Comment
-
-    # Static Constants
-    CONSTANT_VARIABLE2: object = None       # Comment
-
-    def __init__(self):
-        super().__init__()
-
-        # 1. Public
-        self.memberVar2: object = None      # Comment
-
-        # 2. Private
-        self._privateVar2: object = None    # Comment
-
-    def set_data(self):
+    def select_one(self, session: AbstractSession, params: tuple = ()):
         """
-        Connection 인스턴스를 통해 get 데이터를 현재 Dao 인스턴스에 세팅하는 처리
-        :return: void
+        세션 인스턴스를 통해 Data Source로부터 1개 데이터를 조회
+        :param session: AbstractSession 인스턴스
+        :param params: sql 파라미터 데이터
+        :return: {"columns" : columns, "data" : list}
+        """
+        return session.select("select * from FS_FACTORY", params)
+
+    def select_list(self, session: AbstractSession, params: tuple = ()):
+        """
+        세션 인스턴스를 통해 Data Source로부터 리스트 데이터를 조회
+        :param session: AbstractSession 인스턴스
+        :param params: sql 파라미터 데이터
+        :return: {"columns" : columns, "data" : list}
         """
         pass
 
-    def get_data(self):
+    def execute(self, session: AbstractSession, data_list: list):
         """
-        현재 Dao 인스턴스에 세팅된 데이터를 반환하는 처리
-        :return: Array-like Object  ex: pandas.DataFrame / list<list> / ...
+        세션 인스턴스를 통해 Data Source에 대한 CUD를 실행
+        :param session: AbstractSession 인스턴스
+        :param sql_template: sql template string
+        :param data_list: CUD 대상 데이터
+        :return: True/False
         """
         pass

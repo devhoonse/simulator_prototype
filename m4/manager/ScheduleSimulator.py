@@ -1,10 +1,17 @@
 
 import math
 
-from m4.manager.Calendar import Calendar
+from m4.manager.FactoryCalendar import FactoryCalendar
 
 
 class ScheduleSimulator(object):
+    """
+    Schedule Simulator Object
+    시뮬레이션에서 실제 공장의 시간 흐름을 구현하기 위한 클래스
+    자신의 속성으로 Calendar 인스턴스를 소유하여 이로부터 시간에 대한 정보를 얻고
+    실제 self._runTime 속성을 1 timeStep 만큼 진행시키며
+    시뮬레이션 시간을 경과시키도록 설계
+    """
 
     # Static
 
@@ -19,17 +26,14 @@ class ScheduleSimulator(object):
 
         # 2-2. Private
         self._startDate: object = None          # Simulator 엔진 시작 시점: datetime or str
+        self._endDate: object = None            # Simulator 엔진 시작 시점: datetime or str
         self._timestepLength: int = 0           # 매 시간 구간 간격 길이: int
         self._timestepUom: str = ""             # 매 시간 구간 간격 단위: str
-        self._horizonLength: int = 0            # 전체 시간 구간 간격 길이: int
-        self._horizonUom: str = ""              # 전체 시간 구간 간격 단위: str
-        self._calendar: Calendar = Calendar()   # Simulator 전체 시간 범위 Calendar 객체
-        self._calendar_len: int = 0             # Simulator 전체 시간 리스트 객체 / Will be Deprecated
+        self._calendar: FactoryCalendar = FactoryCalendar()   # Simulator 전체 시간 범위 Calendar 객체
         self._runTime: dict = {}                # Simulator 의 현재 runTime 위치 (int)
 
-    def setup_object(self, start_date: object,
-                     timestep_length: int, timestep_uom: str,
-                     horizon_length: int, horizon_uom: str):
+    def init(self, start_date: object, end_date: object,
+             timestep_length: int, timestep_uom: str):
         """
         ScheduleSimulator 인스턴스에 실제 속성을 세팅하는 처리
         :param start_date: object{datetime|str} = 시뮬레이션 시작 일자 정보
@@ -40,69 +44,23 @@ class ScheduleSimulator(object):
         :return: void
         """
 
-        # ScheduleSimulator 객체 속성 값 설정
-        self._set_start_date(start_date=start_date)                  # Simulator 엔진 시작 시점: datetime or str
-        self._set_timestep_length(timestep_length=timestep_length)   # 매 시간 구간 간격 길이: int
-        self._set_timestep_uom(timestep_uom=timestep_uom)            # 매 시간 구간 간격 단위: str
-        self._set_horizon_length(horizon_length=horizon_length)      # 전체 시간 구간 간격 길이: int
-        self._set_horizon_uom(horizon_uom=horizon_uom)               # 전체 시간 구간 간격 단위: str
+        # ScheduleSimulator 객체 기본 속성 값 설정
+        self._set_start_date(start_date=start_date)                 # Simulator 엔진 시작 시점: datetime or str
+        self._set_end_date(end_date=end_date)                       # Simulator 엔진 종료 시점: datetime or str
+        self._set_timestep_length(timestep_length=timestep_length)  # 매 시간 구간 간격 길이: int
+        self._set_timestep_uom(timestep_uom=timestep_uom)           # 매 시간 구간 간격 단위: str
 
         # Calendar 객체 setup
-        self._calendar.setup_calendar(
-            start_date=self._startDate,
-            timestep_length=self._timestepLength, timestep_uom=self._timestepUom,
-            horizon_length=self._horizonLength, horizon_uom=self._horizonUom
+        self._calendar.init(
+            start_date=self._startDate, end_date=end_date,
+            time_step_length=self._timestepLength, time_step_uom=self._timestepUom
         )
-
-        # Calendar 객체에 세팅된 runTime 수 파악
-        self._calendar_len = self._calendar.get_full_calendar_length()
-
-    def run_time(self, print_flag: bool = True):
-        """
-        self._calendar._fullCalendar 에 세팅된 각 캘린더 항목 별로 Loop 를 도는 메서드
-        :param print_flag: bool = 각 calendar 항목들의 콘솔 출력 여부 / default True
-        :return: void
-        """
-
-        # number_of_digits = 콘솔 출력용 자릿수 값
-        # 예를 들어 calendar 갯수가 86400 개라고 하면,
-        # number_of_digits 값은 5 가 됨.
-        # 콘솔에 출력 시 00000 ~ 86400 으로 캘린더 번호의 자릿수를 맞추기 위한 변수
-        number_of_digits: int = math.floor(math.log(self._calendar_len, 10)) + 1
-
-        # 시뮬레이션 시작에 앞서, self._runTime 값을 self._calendar 의 가장 첫 시작 값으로 설정
-        self.stand_by()
-
-        # 시뮬레이션 종료 여부를 판단하기 위해, 다음 runTime 이 있는 지 확인을 위한 bool 변수 선언
-        has_next: bool = True
-
-        # 다음 시간 정보가 있는 한 계속 시간을 앞으로 보내도록 설계
-        while has_next:
-            if print_flag:                      # print_flag 가 설정되어 있을 경우, 콘솔에 출력
-                idx_string: str = '%0{}d'.format(number_of_digits) % \
-                                  self._calendar.get_index(run_time=self._runTime)  # 현재 캘린더의 위치 index
-                print(f"\t[{idx_string}]"                   # 각 Calendar 번호: int
-                      f"\t{self._runTime['DATE']}"          # 각 Calendar 의 날짜 정보: datetime
-                      f"\t{self._runTime['WORK_YN']}")      # 각 Calendar 의 업무 가능 여부: bool
-
-            # 다음 runTime 이 있는 지 확인,
-            # 있으면 True 반환 및 self._runTime을 다음 runTime 값으로 업데이트
-            # 없으면 False 반환 및 self._runTime 유지
-            has_next = self.tick_one_time()
-
-        # # Calendar 들을 순서대로 하나씩 꺼내며 Loop
-        # for obj in self._calendar_full:
-        #     cal: dict = obj                     # 현재 캘린더
-        #     if print_flag:                      # print_flag 가 설정되어 있을 경우, 콘솔에 출력
-        #         print(f"\t{'%0{}d'.format(number_of_digits) % self._calendar_full.index(obj)}"  # 각 Calendar 번호: int
-        #               f"\t{cal['DATE']}"        # 각 Calendar 의 날짜 정보: datetime
-        #               f"\t{cal['WORK_YN']}")    # 각 Calendar 의 업무 가능 여부: bool
 
     def tick_one_time(self):
         """
-        현재 self._runTime 값을 업데이트,
-        self._calendar 에 정의된
-        추후 이 메서드에 정의된 tick 메서드에 의해
+        현재 self._runTime 값을 1 Time Step 만큼 미래로 업데이트,
+        self._calendar 에 정의된 시간 축을 따라 업데이트 됨
+        추후 이 tick 메서드 내부 혹은 전후에서
         Factory 내 각 Entity 들의 Time tick 또한 연동되도록 설계 필요
         :return: bool = 다음 runtime 이 없다면 False, 있다면 True / run_time 메서드에서 참조될 Flag 성 정보
         """
@@ -115,7 +73,7 @@ class ScheduleSimulator(object):
 
         return has_next_runtime
 
-    def stand_by(self):
+    def initialize_runtime(self):
         """
         시뮬레이션 시간 진행을 시작하기에 앞서,
         현재 self._runTime 값을 self._calendar 에 세팅된 시작점으로 세팅하는 처리
@@ -141,6 +99,26 @@ class ScheduleSimulator(object):
         calendar_length: int = self._calendar.get_full_calendar_length()
         return calendar_length
 
+    def add_schedule_policy(self, work_calendars: list):
+        """
+        <테스트 중> : 현재는 work_calendars 파라메터를 list<list> 형식으로 받도록 작성하여 테스트
+        self._calendar 객체에 비가용 계획 구간(들)을 등록하는 처리
+        Batch 처리를 위해 파라메터로 Array-like Object 를 받도록 설계
+        :param work_calendars: Array-like   ex: pandas.DataFrame, list<list>, ...
+        :return: void
+        """
+
+        # 각 구간 별로 등록 개별 등록
+        for obj in work_calendars:
+            interval: list = obj        # [from_date: object, to_date: object, reason: str]
+
+            # self._calendar 에 interval 정보를 등록하는 처리
+            self._calendar.register_unavailable_interval(
+                from_date=interval[0],
+                to_date=interval[1],
+                reason=interval[2]
+            )
+
     def _set_start_date(self, start_date: object):
         """
         start_date 값을 self._startDate 속성으로 할당합니다.
@@ -149,6 +127,15 @@ class ScheduleSimulator(object):
         :return: void
         """
         self._startDate = start_date
+
+    def _set_end_date(self, end_date: object):
+        """
+        start_date 값을 self._startDate 속성으로 할당합니다.
+        :param end_date: 일반적인 object 를 상정, datetime 인지 str 인지를
+                           Calendar 인스턴스가 판단하여 내부에서 처리할 것
+        :return: void
+        """
+        self._endDate = end_date
 
     def _set_timestep_length(self, timestep_length: int):
         """

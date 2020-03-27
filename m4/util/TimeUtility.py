@@ -2,7 +2,7 @@
 import datetime
 
 
-class TimeUtility(type):
+class TimeUtility:
     """
     Time Utility
     시간 관련 처리를 위한 유틸리티성 static 메서드들을 정의
@@ -19,9 +19,21 @@ class TimeUtility(type):
     ]
 
     @staticmethod
+    def check_from_to(start_date: datetime.datetime, end_date: datetime.datetime, equal_flag: bool = False):
+        """
+        시작 시간이 종료 시간 이전인지 검사
+        :param start_date: datetime.datetime = 시작 시간
+        :param end_date: datetime.datetime = 종료 시간
+        :param equal_flag: bool = 부등호에 등호 포함할 지 여부
+        :return: bool = 시작 < 종료 여부
+        """
+        check: bool = start_date < end_date or (equal_flag and start_date == end_date)
+        return check
+
+    @staticmethod
     def derive_timedelta(time_length: int, uom: str):
         """
-        uom 단위의 time_length 길이 정보를 timedelta 객체로 반환하는 private static 메서드
+        uom 단위의 time_length 길이 정보를 timedelta 객체로 반환
         :param time_length: 시간 길이 정수 값
         :param uom: str = 시간 길이 단위 문자열 TimeUtility._TIME_UNIT_TYPES 참조
         :return: datetime.timedelta

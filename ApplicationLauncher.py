@@ -1,4 +1,5 @@
 from m4.ApplicationConfiguration import ApplicationConfiguration
+from m4.util.LogHandler import LogHandler
 from m4.dao import DataSourceError
 from m4.dao.OracleDataSource import OracleDataSource
 from m4.FactorySimulator import FactorySimulator
@@ -11,19 +12,26 @@ from m4.FactorySimulator import FactorySimulator
 
 if __name__ == '__main__':
 
-    try:
-        config: ApplicationConfiguration = ApplicationConfiguration.instance()
-        config.init('m4.properties')
+    config: ApplicationConfiguration = ApplicationConfiguration.instance()
+    config.init('m4.properties')
 
+    logHandler: LogHandler = LogHandler.instance()
+    logHandler.init(config)
+
+    logger = logHandler.get_logger()
+
+    simulator: FactorySimulator = FactorySimulator.instance()
+
+    try:
         data_source: OracleDataSource = OracleDataSource.instance()
         data_source.init(config)
 
-        simulator: FactorySimulator = FactorySimulator.instance()
         simulator.init(config, data_source)
 
-        simulator.run()
-
     except DataSourceError as e:
-        print(e)
+        logger.error(e)
     finally:
         pass
+
+    # Simulation 시작
+    simulator.run()

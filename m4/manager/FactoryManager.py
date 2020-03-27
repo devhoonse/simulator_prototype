@@ -11,4 +11,3 @@ class FactoryManager(SingletonInstance):
 
     def init(self, factory: Factory):
         self._factory = factory
-

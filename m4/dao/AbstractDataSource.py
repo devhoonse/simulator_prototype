@@ -36,4 +36,3 @@ class AbstractDataSource(metaclass=ABCMeta):
         DataSource 비 사용 상태로 전환
         :return: void
         """
-

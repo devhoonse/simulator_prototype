@@ -1,14 +1,14 @@
 
-from abc import *
+from m4.dao.AbstractDao import AbstractDao
 from m4.dao.AbstractSession import AbstractSession
+from m4.common.SingletonInstance import SingletonInstance
 
 
-class AbstractDao(metaclass=ABCMeta):
+class MfScheduleMasterDao(AbstractDao, SingletonInstance):
     """
-    Data Access Object 추상 클래스
+    Factory Data Access Object
     """
 
-    @abstractmethod
     def select_one(self, session: AbstractSession, params: tuple = ()):
         """
         세션 인스턴스를 통해 Data Source로부터 1개 데이터를 조회
@@ -16,8 +16,8 @@ class AbstractDao(metaclass=ABCMeta):
         :param params: sql 파라미터 데이터
         :return: {"columns" : columns, "data" : list}
         """
+        return session.select("select * from MF_SCHEDULE_MST", params)
 
-    @abstractmethod
     def select_list(self, session: AbstractSession, params: tuple = ()):
         """
         세션 인스턴스를 통해 Data Source로부터 리스트 데이터를 조회
@@ -25,8 +25,8 @@ class AbstractDao(metaclass=ABCMeta):
         :param params: sql 파라미터 데이터
         :return: {"columns" : columns, "data" : list}
         """
+        pass
 
-    @abstractmethod
     def execute(self, session: AbstractSession, sql_template: str, data_list: list):
         """
         세션 인스턴스를 통해 Data Source에 대한 CUD를 실행
@@ -35,3 +35,4 @@ class AbstractDao(metaclass=ABCMeta):
         :param data_list: CUD 대상 데이터
         :return: True/False
         """
+        pass

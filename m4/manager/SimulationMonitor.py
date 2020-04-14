@@ -6,12 +6,9 @@ from m4.dao.AbstractSession import AbstractSession
 
 class SimulationMonitor(SingletonInstance):
 
-    _factory_manager: FactoryManager = None
-
-    _data_source: AbstractDataSource = None
-
     def __init__(self):
-        pass
+        self._factory_manager: FactoryManager = None
+        self._data_source: AbstractDataSource = None
 
     def init(self, factory_manager: FactoryManager, data_source: AbstractDataSource):
         self._factory_manager = factory_manager
@@ -19,5 +16,7 @@ class SimulationMonitor(SingletonInstance):
 
     def snapshot(self):
         session: AbstractSession = self._data_source.get_session()
+
+        print("\t\tSimulationMonitor.snapshot()")
 
         session.close()

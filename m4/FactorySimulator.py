@@ -1,41 +1,105 @@
-
 import math
 
 from m4.common.SingletonInstance import SingletonInstance
 from m4.ApplicationConfiguration import ApplicationConfiguration
 from m4.dao.AbstractDataSource import AbstractDataSource
 from m4.dao.AbstractSession import AbstractSession
+from m4.dao.PlanVersionDAO import PlanVersionDAO
+from m4.dao.SimulationDAO import SimulationDAO
 from m4.manager.FactoryBuilder import FactoryBuilder
 from m4.manager.FactoryManager import FactoryManager
 from m4.manager.ScheduleManager import ScheduleManager
 from m4.manager.SimulationMonitor import SimulationMonitor
+from m4.backward.BackwardBuilder import BackwardBuilder
+from m4.backward.BackwardManager import BackwardManager
+
+from m4.util.LogHandler import LogHandler
 
 
 class FactorySimulator(SingletonInstance):
 
     def __init__(self):
+        # logger
+        self._logger = LogHandler.instance().get_logger()
+        # 생산 일정 계획 버전 정보
+        self._plan_version_dict: dict = None
+        # 시뮬레이션 정보
+        self._simulation_dict: dict = None
+        # Schedule Manager Object
+        self._scheduleManager = ScheduleManager()  # Simulator 전체 runTime 범위 관리하는 ScheduleManager 객체
+        # self._run_time: dict = {}                  # Simulator 의 현재 runTime 위치 (int)
 
-        # 2-2. Private
-        self._scheduleManager: ScheduleManager = ScheduleManager()  # Simulator 전체 시간 범위 ScheduleManager 객체
-        self._runTime: dict = {}                                    # Simulator 의 현재 runTime 위치 (int)
+        self.backward_step_plan_result: list = []
+        self.backward_step_plan_by_loc: dict = {}
 
-    def init(self, config: ApplicationConfiguration, data_source: AbstractDataSource):
+    def init(self, plan_version_id: str, simulation_id: str, config: ApplicationConfiguration, data_source: AbstractDataSource):
         session: AbstractSession = data_source.get_session()
 
-        factory_manager = FactoryManager.instance()
-        factory_manager.init(FactoryBuilder.build(session))
+        plan_version_dao = PlanVersionDAO.instance()
+        self._plan_version_dict = plan_version_dao.map(plan_version_dao.instance().select_one(session, plan_version_id=plan_version_id))[0]
+        simulation_dao = SimulationDAO.instance()
+        self._simulation_dict = simulation_dao.map(simulation_dao.instance().select_one(session, simulation_id=simulation_id))[0]
 
+        # ScheduleManager 객체 setup
+        self._scheduleManager.init(self._plan_version_dict, self._simulation_dict, session)
+
+        # FactoryBuilder.build(self._plan_version_dict, self._simulation_dict, session)
+
+        factory_manager: FactoryManager = FactoryManager.instance()
+        factory_manager.init(FactoryBuilder.build(plan_version_dict=self._plan_version_dict,
+                                                  simulation_dict=self._simulation_dict,
+                                                  session=session))
+
+        #
         monitor: SimulationMonitor = SimulationMonitor.instance()
         monitor.init(factory_manager, data_source)
 
-        # RuntimeManager 객체 setup
-        self._scheduleManager.init(session)
-
         session.close()
 
-    def run(self):
+    def set_backward_plan(self):
 
-        # 싱긅톤 SimulationMonitor 인스턴스 가져오기
+        factory_manager: FactoryManager = FactoryManager.instance()
+        factory_manager.set_backward_plan(orders=self.backward_step_plan_by_loc)
+
+    def backward(self, data_source: AbstractDataSource):
+        """
+
+        :return:
+        """
+        session: AbstractSession = data_source.get_session()
+        ########################################################################
+        # Backward Process
+        ########################################################################
+        # 싱글톤 BackwardManager 인스턴스 가져오기
+        backward_manager: BackwardManager = BackwardManager.instance()
+        work_order_list, route_list, inventory_item_list, wip_list = \
+            BackwardBuilder.build(plan_version_dict=self._plan_version_dict,
+                                  simulation_dict=self._simulation_dict,
+                                  session=session)
+
+        # Initialize Backward Process
+        backward_manager.init(work_order_list=work_order_list,
+                              route_list=route_list,
+                              inventory_item_list=inventory_item_list,
+                              wip_list=wip_list)
+
+        # Execute Backward Process
+        backward_step_plan_result, backward_step_plan_by_loc = backward_manager.run()
+        self.backward_step_plan_result = backward_step_plan_result
+        self.backward_step_plan_by_loc = backward_step_plan_by_loc
+
+    def run(self):
+        """
+        실제 Simulation 을 구동하는 메서드
+        :return: void
+        """
+
+        print("\nFactorySimulator.run()")
+
+        # 싱글톤 FactoryManager 인스턴스 가져오기
+        factory_manager: FactoryManager = FactoryManager.instance()
+
+        # 싱글톤 SimulationMonitor 인스턴스 가져오기
         monitor: SimulationMonitor = SimulationMonitor.instance()
 
         # 시뮬레이션 시작 전 상황 snapshot
@@ -45,62 +109,22 @@ class FactorySimulator(SingletonInstance):
         # 예를 들어 calendar 갯수가 86400 개라고 하면,
         # number_of_digits 값은 5 가 됨.
         # 콘솔에 출력 시 00000 ~ 86400 으로 캘린더 번호의 자릿수를 맞추기 위한 변수
-        number_of_timesteps: int = self._scheduleManager.get_full_axis_length()
-        number_of_digits: int = math.floor(math.log(number_of_timesteps, 10)) + 1
-
-        # 시뮬레이션 시작에 앞서, self._runTime 값을 self._calendar 의 가장 첫 시작 값으로 설정
-        self.initialize_runtime()
-
-        # 시뮬레이션 종료 여부를 판단하기 위해, 다음 runTime 이 있는 지 확인을 위한 bool 변수 선언
-        has_next_runtime: bool = True
+        horizon: int = self._scheduleManager.length()
+        number_of_digits: int = math.floor(math.log(horizon, 10)) + 1
 
         # 다음 시간 정보가 있는 한 계속 시간을 앞으로 보내도록 설계
-        while has_next_runtime:
+        while self._scheduleManager.has_next():
+            time: dict = self._scheduleManager.next()
+            self._logger.debug(time)
 
             # 현재 캘린더의 리스트 내 위치 index 를 문자열 Formatting     ex: 00000 ~ 86400
-            idx_string: str = '%0{}d'.format(number_of_digits) % \
-                              self._scheduleManager.get_index(run_time=self._runTime)
+            # idx_string: str = "%0{}d".format(number_of_digits) % time["index"]
 
-            print(f"\t[{idx_string}]"               # 각 Calendar 번호: int
-                  f"\t{self._runTime['DATE']}"      # 각 Calendar 의 날짜 정보: datetime
-                  f"\t{self._runTime['WORK_YN']}"   # 각 Calendar 의 업무 가능 여부: bool
-                  )
+            # 현재 RunTime 정보를 Console 에 출력
+            # self._logger.debug(f"[{idx_string}] {time['date']}")
+
+            # FactoryManager 인스턴스를 통해 Factory 상황을 1 tick
+            factory_manager.run_factory(run_time=time)
 
             # 현재 RunTime 에서의 시뮬레이션 상황 snapshot 저장
             monitor.snapshot()
-
-            # 다음 runTime 이 있는 지 확인 (has_next_runtime: bool)
-            # 있으면 True 반환 및 self._runTime을 다음 runTime 값으로 업데이트
-            # 없으면 False 반환 및 self._runTime 유지
-            has_next_runtime = self.tick_one_time()
-
-    def tick_one_time(self):
-        """
-        현재 self._runTime 값을 1 Time Step 만큼 미래로 업데이트,
-        self._runtimeManager 에 정의된 시간 축을 따라 업데이트 됨
-        추후 이 tick 메서드 내부 혹은 전후에서
-        Factory 내 각 Entity 들의 Time tick 또한 연동되도록 설계 필요
-        :return: bool = 다음 runtime 이 없다면 False, 있다면 True / run_time 메서드에서 참조될 Flag 성 정보
-        """
-
-        # 현재 self._runTime 다음 runtime get
-        next_runtime: dict = self._scheduleManager.get_next_time(run_time=self._runTime)
-
-        # 다음 runtime 이 비었으면 False
-        has_next_runtime: bool = next_runtime != {}
-
-        # 다음 runtime 이 있을 경우에만 현재 ScheduleSimulator 의 self._runTime 값을 업데이트
-        if has_next_runtime:
-            self._runTime = next_runtime
-
-        return has_next_runtime
-
-    def initialize_runtime(self):
-        """
-        시뮬레이션 시간 진행을 시작하기에 앞서,
-        현재 self._runTime 값을 self._runtimeManager 에 세팅된 시작점으로 세팅하는 처리
-        :return: void
-        """
-
-        # 시뮬레이션 시작에 앞서, self._runTime 값을 self._calendar 의 가장 첫 시작 값으로 설정
-        self._runTime: dict = self._scheduleManager.get_first_time()

@@ -11,11 +11,9 @@ class LogHandler(SingletonInstance):
     logging.Logger를 관리하는 Handler 클래스
     """
 
-    # logging.Logger 인스턴스
-    _logger: logging.Logger = None  # Logger 인스턴스 할당을 위한 변수 선언
-
     def __init__(self):
-        pass
+        # logging.Logger 인스턴스
+        self._logger: logging.Logger = None  # Logger 인스턴스 할당을 위한 변수 선언
 
     def init(self, config: ApplicationConfiguration):
         """

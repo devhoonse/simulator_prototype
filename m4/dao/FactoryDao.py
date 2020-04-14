@@ -1,21 +1,24 @@
 from m4.common.SingletonInstance import SingletonInstance
-from m4.dao.AbstractDao import AbstractDao
+from m4.dao.AbstractDAO import AbstractDAO
 from m4.dao.AbstractSession import AbstractSession
 
 
-class FactoryDao(AbstractDao, SingletonInstance):
+class FactoryDAO(AbstractDAO, SingletonInstance):
     """
     Factory Data Access Object
     """
 
-    def select_one(self, session: AbstractSession, params: tuple = ()):
+    def select(self, session: AbstractSession, **params):
+        pass
+
+    def select_one(self, session: AbstractSession, **params):
         """
         세션 인스턴스를 통해 Data Source로부터 1개 데이터를 조회
         :param session: AbstractSession 인스턴스
         :param params: sql 파라미터 데이터
         :return: {"columns" : columns, "data" : list}
         """
-        return session.select("select * from FS_FACTORY", params)
+        return session.select("select * from CM_PLANT", params)
 
     def select_list(self, session: AbstractSession, params: tuple = ()):
         """

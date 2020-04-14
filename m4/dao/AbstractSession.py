@@ -28,7 +28,7 @@ class AbstractSession(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def select(self, sql: str, params: tuple = ()):
+    def select(self, sql: str, params: dict):
         """
         Data Source로부터 Query문 결과 Array를 가져오는 처리
         :param sql: sql string
@@ -46,7 +46,7 @@ class AbstractSession(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def execute_procedure(self, procedure_name: str, params: tuple = ()):
+    def execute_procedure(self, procedure_name: str, params):
         """
         DB 에 저장된 프로시져를 호출하는 처리
         :param procedure_name: procedure name

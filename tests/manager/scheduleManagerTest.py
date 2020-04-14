@@ -5,7 +5,6 @@ import datetime
 import unittest
 
 from m4.manager.ScheduleManager import ScheduleManager
-from m4.util.TimeUtility import TimeUtility
 
 
 class ScheduleManagerTestCase(unittest.TestCase):
@@ -22,13 +21,13 @@ class ScheduleManagerTestCase(unittest.TestCase):
 
         print("\n시간 길이 UOM 단위 반영 테스트")
 
-        ten_hours_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=10, uom="hours")
+        ten_hours_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=10, time_uom="hours")
         print(f"{10} {'hours'} = {type(ten_hours_delta)} : {ten_hours_delta}")
 
-        one_week_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=1, uom="weeks")
+        one_week_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=1, time_uom="weeks")
         print(f"{1} {'weeks'} = {type(one_week_delta)} : {one_week_delta}")
 
-        one_microsec_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=1, uom="microseconds")
+        one_microsec_delta: datetime.timedelta = TimeUtility.derive_timedelta(time_length=1, time_uom="microseconds")
         print(f"{1} {'microseconds'} = {type(one_microsec_delta)} : {one_microsec_delta}")
 
     def test_setup_with_datetime(self):
@@ -54,7 +53,7 @@ class ScheduleManagerTestCase(unittest.TestCase):
         print(f"\tSTART_DATE : {start_date}")
         print(f"\tEND_DATE : {end_date}")
         print(f"\tTIME_STEP : {timestep_length} {timestep_uom}")
-        print(f"\tHORIZON : {self.scheduleManager._horizonLen} {'seconds'}")
+        print(f"\tHORIZON : {self.scheduleManager._horizon_len} {'seconds'}")
 
         # 실제 세팅된 캘린더 목록을 Loop 돌면서 확인
         full_calendar: list = self.scheduleManager.get_full_axis()
@@ -103,7 +102,7 @@ class ScheduleManagerTestCase(unittest.TestCase):
         print(f"\tSTART_DATE : {start_date}")
         print(f"\tEND_DATE : {end_date}")
         print(f"\tTIME_STEP : {timestep_length} {timestep_uom}")
-        print(f"\tHORIZON : {self.scheduleManager._horizonLen} {'seconds'}")
+        print(f"\tHORIZON : {self.scheduleManager._horizon_len} {'seconds'}")
 
         # 실제 세팅된 캘린더 목록을 Loop 돌면서 확인
         full_calendar: list = self.scheduleManager.get_full_axis()
@@ -155,7 +154,7 @@ class ScheduleManagerTestCase(unittest.TestCase):
         print(f"\tSTART_DATE : {start_date}")
         print(f"\tEND_DATE : {end_date}")
         print(f"\tTIME_STEP : {timestep_length} {timestep_uom}")
-        print(f"\tHORIZON : {self.scheduleManager._horizonLen} {'seconds'}")
+        print(f"\tHORIZON : {self.scheduleManager._horizon_len} {'seconds'}")
 
 
 if __name__ == '__main__':

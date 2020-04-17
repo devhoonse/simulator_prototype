@@ -3,8 +3,6 @@ import datetime
 
 from m4.common.SingletonInstance import SingletonInstance
 from ..constraint.AbstractConstraint import AbstractConstraint
-from ..constraint.ScheduleConstraint import ScheduleConstraint
-from ..backward.BackwardStepPlan import BackwardStepPlan
 from m4.operator.Factory import Factory
 
 
@@ -18,8 +16,11 @@ class FactoryManager(SingletonInstance):
     def init(self, factory: Factory):
         self._factory = factory
 
-    def set_backward_plan(self, orders: dict):
-        self._factory.set_backward_plan(orders=orders)
+    def set_backward_plan(self, orders: dict, plan_version_dict: dict):
+        self._factory.set_backward_plan(orders=orders, plan_version_dict=plan_version_dict)
+
+    def set_backward_peg_result(self, peg_result: dict):
+        self._factory.set_backward_peg_result(peg_result_dict=peg_result)
 
     def run_factory(self, run_time: dict):
         """

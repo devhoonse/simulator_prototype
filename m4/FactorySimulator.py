@@ -31,6 +31,7 @@ class FactorySimulator(SingletonInstance):
 
         self.backward_step_plan_result: list = []
         self.backward_step_plan_by_loc: dict = {}
+        self.backward_step_peg_result: dict = {}
 
     def init(self, plan_version_id: str, simulation_id: str, config: ApplicationConfiguration, data_source: AbstractDataSource):
         session: AbstractSession = data_source.get_session()
@@ -59,7 +60,9 @@ class FactorySimulator(SingletonInstance):
     def set_backward_plan(self):
 
         factory_manager: FactoryManager = FactoryManager.instance()
-        factory_manager.set_backward_plan(orders=self.backward_step_plan_by_loc)
+        factory_manager.set_backward_plan(orders=self.backward_step_plan_by_loc,
+                                          plan_version_dict=self._plan_version_dict)
+        factory_manager.set_backward_peg_result(peg_result=self.backward_step_peg_result)
 
     def backward(self, data_source: AbstractDataSource):
         """
@@ -84,9 +87,10 @@ class FactorySimulator(SingletonInstance):
                               wip_list=wip_list)
 
         # Execute Backward Process
-        backward_step_plan_result, backward_step_plan_by_loc = backward_manager.run()
+        backward_step_plan_result, backward_step_plan_by_loc, backward_step_peg_result = backward_manager.run()
         self.backward_step_plan_result = backward_step_plan_result
         self.backward_step_plan_by_loc = backward_step_plan_by_loc
+        self.backward_step_peg_result = backward_step_peg_result
 
     def run(self):
         """

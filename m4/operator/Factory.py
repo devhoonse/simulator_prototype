@@ -4,10 +4,10 @@ from ..constraint.AbstractConstraint import AbstractConstraint
 from ..constraint.ScheduleConstraint import ScheduleConstraint
 from ..operator.Inventory import Inventory
 from ..operator.Process import Process
-from ..process.AbstractRouteNode import AbstractRouteNode
 from ..process.Router import Router
 from ..process.Item import Item
 from ..backward.BackwardStepPlan import BackwardStepPlan
+from ..util.DateTimeUtility import DateTimeUtility
 
 
 class Factory(object):
@@ -84,24 +84,39 @@ class Factory(object):
         # 최초 출발지 Inventory 에 Work Order Item 인스턴스들을 할당
         # self._init_initial_items(work_order_items=work_order_items)
 
-    def set_backward_plan(self, orders: dict):
+    def set_backward_plan(self, orders: dict, plan_version_dict: dict):
+
+        plan_start_date = DateTimeUtility.convert_str_to_date(plan_version_dict['START_DT_HMS'])
 
         sequence_indices: list = sorted(self._router_sequence.keys())
         sequence_depth: int = max(sequence_indices)
 
         for obj in self._routers:
             router: Router = obj
-            router_orders: list = orders.get(router.route_location.id, [])
+            router_orders: list = orders.get(router.current_route.id, [])
             router.set_production_orders(production_orders=router_orders)
 
         for obj in self._starting_routers:
             router: Router = obj
-            router_orders: list = orders.get(router.route_location.id, [])
+            router_orders: list = orders.get(router.current_route.id, [])
             for obj2 in router_orders:
                 step_plan: BackwardStepPlan = obj2
                 item: Item = Item()
-                item.init(info=step_plan)
-                router.route_location.put(item=item)
+
+                due_date: object = step_plan.due_date
+                due_date = \
+                    DateTimeUtility.convert_str_to_date(due_date) if isinstance(due_date, str) else \
+                    due_date if isinstance(due_date, datetime.datetime) else \
+                    None
+
+                item.init(work_order_id=step_plan.work_order_id,
+                          order_item_id=step_plan.finished_item_id,
+                          item_id=step_plan.item_id,
+                          location_id=step_plan.location_id,
+                          quantity=step_plan.work_order_qty,
+                          due_date=due_date)
+                # router.current_route.put(item=item)
+                router.current_route.put(time_index=0, date=plan_start_date, item=item, move_time=0)
 
         # for index in sequence_indices:
         #     for obj in self._router_sequence[index]:
@@ -117,6 +132,78 @@ class Factory(object):
         #                 item.init(info=router_order.__dict__)
         #                 router.route_location.put(item=item)
 
+    def set_backward_peg_result(self, peg_result_dict: dict):
+        after_peg_stock = {}
+        for key, value in peg_result_dict.items():
+            if key[0] not in after_peg_stock.keys():
+                temp_list = []
+                for item in value:
+                    info = Item()
+
+                    due_date: object = item.get('DUE_DT', None)
+                    due_date = \
+                        DateTimeUtility.convert_str_to_date(due_date) if isinstance(due_date, str) else \
+                        due_date if isinstance(due_date, datetime.datetime) else \
+                        None
+
+                    info.init(work_order_id=item.get('WORK_ORDER_ID', ''),
+                              order_item_id=item.get('ORDER_ITEM_ID', ''),
+                              item_id=item.get('ITEM_ID', ''),
+                              location_id=item.get('LOC_ID', key[0]),
+                              quantity=item.get('STOCK_QTY', 0),
+                              due_date=due_date)
+                    temp_list.append(value)
+                after_peg_stock.update({key[0]: {key[1]: temp_list}})
+            else:
+                temp_dict = after_peg_stock[key[0]]
+                if key[1] not in temp_dict.keys():
+                    temp_list = []
+                    for item in value:
+                        info = Item()
+
+                        due_date: object = item.get('DUE_DT', None)
+                        due_date = \
+                            DateTimeUtility.convert_str_to_date(due_date) if isinstance(due_date, str) else \
+                            due_date if isinstance(due_date, datetime.datetime) else \
+                            None
+
+                        info.init(work_order_id=item.get('WORK_ORDER_ID', ''),
+                                  order_item_id=item.get('ORDER_ITEM_ID', ''),
+                                  item_id=item.get('ITEM_ID', ''),
+                                  location_id=item.get('LOC_ID', key[0]),
+                                  quantity=item.get('STOCK_QTY', 0),
+                                  due_date=due_date)
+                        temp_list.append(value)
+                    temp_dict.update({key[1]: temp_list})
+                    after_peg_stock.update({key[0]: temp_dict})
+                else:
+                    temp_dict = after_peg_stock[key[0]]
+                    temp_list = temp_dict[key[1]]
+                    for item in value:
+                        info = Item()
+
+                        due_date: object = item.get('DUE_DT', None)
+                        due_date = \
+                            DateTimeUtility.convert_str_to_date(due_date) if isinstance(due_date, str) else \
+                            due_date if isinstance(due_date, datetime.datetime) else \
+                            None
+
+                        info.init(work_order_id=item.get('WORK_ORDER_ID', ''),
+                                  order_item_id=item.get('ORDER_ITEM_ID', ''),
+                                  item_id=item.get('ITEM_ID', ''),
+                                  location_id=item.get('LOC_ID', key[0]),
+                                  quantity=item.get('STOCK_QTY', 0),
+                                  due_date=due_date)
+                        temp_list.append(value)
+                    temp_dict.update({key[1]: temp_list})
+                    after_peg_stock.update({key[0]: temp_dict})
+
+        for peg_inv in after_peg_stock.keys():
+            for inventory in self._inventories.keys():
+                if inventory == peg_inv:
+                    inv: Inventory = self._inventories[inventory]
+                    inv.set_item_dict(after_peg_stock[peg_inv])
+
     def run(self, run_time: dict, time_constraint: object = None):
         """
 
@@ -127,9 +214,9 @@ class Factory(object):
         self._run_reverse(run_time=run_time, time_constraint=time_constraint)
 
     def _run_reverse(self, run_time: dict, time_constraint: object = None):
-        for obj in self.processes.values():
-            process: Process = obj
-            process.tick()
+        # for obj in self.processes.values():
+        #     process: Process = obj
+        #     process.tick()
 
         for route_step in sorted(self._router_sequence.keys()):
             for obj in self._router_sequence[route_step]:
@@ -216,7 +303,7 @@ class Factory(object):
             )
         elif len(starting_routers) == 1:
             starting_router: Router = starting_routers[0]
-            starting_inventory: Inventory = starting_router.route_location
+            starting_inventory: Inventory = starting_router.current_route
             for item in work_order_items:
                 starting_inventory.put_initial_item(item=item)
         else:
@@ -232,7 +319,7 @@ class Factory(object):
         :return:
         """
         return [router for router in self._routers
-                if isinstance(router.route_location, Inventory) and router.route_location.start_flag is True]
+                if isinstance(router.current_route, Inventory) and router.current_route.start_flag is True]
 
     def _init_next_to_curr_item_dict(self, to_from_item_dict: dict):
         """
@@ -329,7 +416,7 @@ class Factory(object):
                 prior_routers: list = \
                     [] if index == sequence_depth else \
                     [pr for pr in self._router_sequence[index + 1]
-                     if router.route_location in pr.next_locations]
+                     if router.current_route in pr.next_route_list]
 
                 if len(prior_routers) == 0:
                     routers.append(router)

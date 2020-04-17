@@ -1,8 +1,9 @@
 import sys
+from m4.constraint.AbstractConstraint import AbstractConstraint
 from m4.constraint.ItemConstraint import ItemConstraint
 
 
-class CapacityConstraint(object):
+class CapacityConstraint(AbstractConstraint):
     """
     Capacity Constraint Object
     """
@@ -11,6 +12,7 @@ class CapacityConstraint(object):
         """
         Capacity Constraint 생성자
         """
+        super().__init__("CAPA", "Capacity Constraint", "CAPA_CONST")
         self.max_quantity: float = None
         # item constraints - item 별로 저장
         self.item_constraints: dict = {}
@@ -28,10 +30,12 @@ class CapacityConstraint(object):
             for item in items:
                 total_quantity = total_quantity + item.get_quantity()
 
-        if total_quantity + quantity <= self.max_quantity:
-            item_constraint: ItemConstraint = self.item_constraints.get(item_id)
-            # item constraint가 있는 경우
-            if item_constraint is not None:
-                return item_constraint.check(item_id, stock[item_id], quantity)
+        if total_quantity + quantity > self.max_quantity:
+            return self
 
-        return False
+        item_constraint: ItemConstraint = self.item_constraints.get(item_id)
+        # item constraint가 있는 경우
+        if item_constraint is not None:
+            return item_constraint.check(item_id, stock.get(item_id), quantity)
+
+        return None

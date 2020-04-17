@@ -2,9 +2,9 @@ import sys
 import datetime
 
 from m4.constraint.ScheduleConstraint import ScheduleConstraint
+from ..constraint.CapacityConstraint import CapacityConstraint
 from ..operator.Resource import Resource
 from m4.process.ProcessLot import ProcessLot
-from ..process.ProcessLots import ProcessLots
 from m4.process.Item import Item
 
 
@@ -37,13 +37,15 @@ class ProcessResource(object):
         self._process_precision: float = 0.0
         self._min_lot_size: float = 0.0
         self._max_lot_size: float = 0.0
-        self._process_time: float = 0.0
-        self._setup_time: float = 0.0
-        self._queue_time: float = 0.0
-        self._wait_time: float = 0.0
-        self._move_time: float = 0.0
+        self._process_time: int = 0
+        self._setup_time: int = 0
+        self._queue_time: int = 0
+        self._wait_time: int = 0
+        self._move_time: int = 0
 
-        self._process_lots: ProcessLots = ProcessLots()        # Resource 의 실제 작업을 수행하는 객체
+        self._constraints: CapacityConstraint = None
+
+        self._process_lot: ProcessLot = ProcessLot()        # Resource 의 실제 작업을 수행하는 객체
 
     def init(self, info: dict, resource: Resource):
         """
@@ -55,48 +57,40 @@ class ProcessResource(object):
 
         self.process_id = info['PROC_ID']
         self.resource_id = info['RESC_ID']
-        self.resource_id = info['BOR_NM']
+        self.name = info['BOR_NM']
 
         self._resource = resource
         self._priority: int = info['PRIORITY']
         self._production_efficiency: float = info['PROD_EFFCNCY']
         self._process_precision: float = info['PROC_PRECSN']
         self._min_lot_size: float = info['MIN_LOT_SIZE']
-        self._max_lot_size: float = sys.float_info.max if info['MAX_LOT_SIZE'] is None or info['MAX_LOT_SIZE'] == 0 else info['MAX_LOT_SIZE']
-        self._process_time: float = info['PROC_TM']
-        self._setup_time: float = info['PRE_PROC_SETUP_TM']
-        self._queue_time: float = 0
-        self._wait_time: float = info['POST_PROC_WAIT_TM']
-        self._move_time: float = 0
+        self._max_lot_size: float = sys.float_info.max if info['MAX_LOT_SIZE'] in [None, 0] else info['MAX_LOT_SIZE']
+        self._process_time: int = info['PROC_TM']
+        self._setup_time: int = info['PRE_PROC_SETUP_TM']
+        self._queue_time: int = 0
+        self._wait_time: int = info['POST_PROC_WAIT_TM']
+        self._move_time: int = 0
 
-    def check(self):
+    def is_available(self, date: datetime.datetime, item_id: str, quantity: float, move_time: int):
         """
 
         :return:
         """
-        print(f"\t\t\t\t\t\tChecking {self.__class__.__name__} {self.id} ...")
+        print(f"\t\t\t\t\t\tChecking {self.__class__.__name__} {self.process_id} ...")
+        return self._process_lot.is_available()
 
-    def put(self, item: Item, run_time: dict):
-        process_lot: ProcessLot = ProcessLot()
-        process_lot.init(item=item)
-        self._process_lots.append(process_lot)
+    def put(self, item: Item):
+        self._process_lot.put(item=item)
 
     def tick(self):
         """
 
         :return:
         """
-        for obj in self._process_lots:
-            process_lot: ProcessLot = obj
-            process_lot.tick()
+        self._process_lot.run()
 
     def fetch(self):
-        items: list = []
-        for obj in self._process_lots:
-            process_lot: ProcessLot = obj
-            if not process_lot.has_next:
-                pass
-        return items
+        return self._process_lot.fetch()
 
     def set_priority(self, priority: int):
         self._priority = priority

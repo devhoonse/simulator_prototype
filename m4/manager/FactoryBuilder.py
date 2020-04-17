@@ -1,3 +1,6 @@
+
+import datetime
+
 from m4.dao.AbstractSession import AbstractSession
 from m4.dao.FactoryDAO import FactoryDAO
 from m4.dao.FactoryScheduleDAO import FactoryScheduleDAO
@@ -12,9 +15,9 @@ from m4.process.Router import Router
 from ..operator.Inventory import Inventory
 from ..operator.Resource import Resource
 from ..operator.Process import Process
-from ..process.AbstractRouteNode import AbstractRouteNode
 from m4.operator.Factory import Factory
 from m4.process.Item import Item
+from ..util.DateTimeUtility import DateTimeUtility
 
 from m4.dao.DemandDAO import DemandDAO
 
@@ -27,7 +30,7 @@ class FactoryBuilder:
     _routes: list = []  # OK
     _work_order_item_list: list = []    # OK
     _curr_to_next_route_dict: dict = {}   # OK
-    _item_to_finished_item_dict: dict = {}     # OK
+    _item_to_finished_item_dict: dict = {}     # OK     ****
     _start_location: str = ''
     _end_location: str = ''
 
@@ -40,15 +43,9 @@ class FactoryBuilder:
 
         schedule_constraint = cls._init_schedule_constraint(simulation_dict, session)
 
-        inventories = cls._init_inventories(simulation_dict, session)
+        inventories = cls._init_inventories(plan_version_dict, simulation_dict, session)
 
         cls._init_inv_start_end_location(simulation_dict, session)    # 임시
-
-        # inventory: Inventory = inventories['HOPPER']
-        # res = inventory.check('311512600110', 200)
-        # print(res)
-        # res = inventory.check('311512600110', 500)
-        # print(res)
 
         resources = cls._init_resources(simulation_dict, session)
 
@@ -109,7 +106,7 @@ class FactoryBuilder:
         return schedule_constraint
 
     @classmethod
-    def _init_inventories(cls, simulation_dict, session: AbstractSession):
+    def _init_inventories(cls, plan_version_dict: dict, simulation_dict: dict, session: AbstractSession):
         """
         :param simulation_dict: simulation_dict 정보
         :param session: Abstract Session
@@ -117,6 +114,7 @@ class FactoryBuilder:
         """
         # InventoryDAO로 부터 정보 받아오기
         simulation_id = simulation_dict['SIM_ID']
+        plan_start_date = DateTimeUtility.convert_str_to_date(plan_version_dict['START_DT_HMS'])
         dao: InventoryDAO = InventoryDAO.instance()
         inventory_data = dao.map(dao.select_route_inventory(session, simulation_id=simulation_id))
         item_dict: dict = dao.hash_map(dao.select_route_item(session, simulation_id=simulation_id), "INV_ID")
@@ -132,8 +130,20 @@ class FactoryBuilder:
             items: list = item_dict.get(inv['INV_ID'], [])
             for info in items:
                 item: Item = Item()
-                item.init(info)
-                inventory.put(item)
+
+                due_date: object = info.get('DUE_DT', None)
+                due_date = \
+                    DateTimeUtility.convert_str_to_date(due_date) if isinstance(due_date, str) else\
+                    due_date if isinstance(due_date, datetime.datetime) else \
+                    None
+
+                item.init(work_order_id=info.get('WORK_ORDER_ID', ''),
+                          order_item_id=info.get('ORDER_ITEM_ID', ''),
+                          item_id=info.get('ITEM_ID', ''),
+                          location_id=info.get('LOC_ID', ''),
+                          quantity=info.get('QTY', ''),
+                          due_date=due_date)
+                inventory.put(time_index=0, date=plan_start_date, item=item, move_time=0)
 
             inventories[inv['INV_ID']] = inventory
         return inventories
@@ -213,7 +223,7 @@ class FactoryBuilder:
 
     @classmethod
     def _get_route_sequence(cls, routers: list):
-        last_routers: list = cls._get_last_routers(routers=routers)
+        last_routers: list = cls._get_last_router(routers=routers)
         router_sequence: dict = {1: last_routers}
         routers = set(routers).difference(set(last_routers))
         while routers:
@@ -228,7 +238,7 @@ class FactoryBuilder:
         return router_sequence
 
     @classmethod
-    def _get_last_routers(cls, routers: list):
+    def _get_last_router(cls, routers: list):
         last_routers: list = []
         for obj in routers:
             router: Router = obj
@@ -241,7 +251,7 @@ class FactoryBuilder:
         next_routers: list = []
         for obj in routers:
             tmp_router: Router = obj
-            if tmp_router.route_location in router.next_locations:
+            if tmp_router.current_route in router.next_route_list:
                 next_routers.append(tmp_router)
         return next_routers
 
@@ -250,7 +260,7 @@ class FactoryBuilder:
         prior_routers: list = []
         for obj in routers:
             tmp_router: Router = obj
-            if router.route_location in tmp_router.next_locations:
+            if router.current_route in tmp_router.next_route_list:
                 prior_routers.append(tmp_router)
         return prior_routers
 
@@ -288,42 +298,52 @@ class FactoryBuilder:
         :param route_master:
         :return:
         """
-        # Work Order Item에 관한 To ~ From Route Dictionary 작성
-        # to_from_item_dict: dict = cls._create_to_from_item_dict(route_master=route_master)
-
-        #
-        # item_route_list, item_route_error_list = cls._create_work_order_route(
-        #     work_order_item_list=work_order_item_list,
-        #     to_from_item_dict=to_from_item_dict)
-
-        # Location 정보 setting
-        route_naming_dict = cls._create_location_route_list(route_master=route_master)
-
-        #
-        route_loc_group_dict = cls._create_route_group(route_master=route_master)
-
         # Pointer 리스트
         entity_pointers: dict = inventories.copy()
         entity_pointers.update(processes)
 
+        # Location 정보 setting
+        route_loc_dict = cls._create_route_loc_list(route_master=route_master)
+
+        # Previous & Next Route Setting
+        prev_route_dict, next_route_dict = cls._create_prev_next_route_dict(route_master=route_master,
+                                                                            route_loc_list=list(route_loc_dict.keys()),
+                                                                            entity_pointers=entity_pointers)
+
+        # Location Type Setting
+        route_type_dict = cls._create_route_type_dict(route_master=route_master)
+
+        #
+        route_loc_group_dict = cls._create_route_group(route_master=route_master)
+
         # Route 인스턴스 리스트 세팅
         routes: list = []
         for key, val in route_loc_group_dict.items():
-            route_id = route_naming_dict[key]
+            route_id = route_loc_dict[key]
             route_location = entity_pointers[key]
             curr_to_next_route_dict = cls._create_curr_to_next_route_dict(bom_route_list=val, entity_pointers=entity_pointers)
+
+            previous_route_list = prev_route_dict.get(route_location.id, [])
+            next_route_list = next_route_dict.get(route_location.id, [])
 
             route = Router()
             route.init(route_id=route_id,
                        route_location=route_location,
+                       route_type=route_type_dict[route_location.id],
+                       previous_route_list=previous_route_list,
+                       next_route_list=next_route_list,
                        curr_to_next_route_dict=curr_to_next_route_dict)
             routes.append(route)
 
         # End Location Route Setting
         route = Router()
         end_location = FactoryBuilder._end_location
+        previous_route_list = prev_route_dict.get(end_location, [])
         route.init(route_id=end_location,
                    route_location=entity_pointers[end_location],
+                   route_type=route_type_dict[end_location],
+                   previous_route_list=previous_route_list,
+                   next_route_list=[],
                    curr_to_next_route_dict={})
         routes.append(route)
 
@@ -391,9 +411,6 @@ class FactoryBuilder:
                     break
             item_route_list.append(work_order_route)
 
-        # 반제품 item id ~ final item id에 대한 Dictionary 생성
-        # cls._create_item_to_final_item_dict(item_route_list=item_route_list)
-
         return item_route_list, item_route_error_list
 
     @classmethod
@@ -412,6 +429,18 @@ class FactoryBuilder:
         return item_to_final_item_dict
 
     @classmethod
+    def _create_route_type_dict(cls, route_master: list):
+        route_type_dict = {}
+
+        for route in route_master:
+            if route['CURR_LOC_ID'] not in route_type_dict:
+                route_type_dict.update({route['CURR_LOC_ID']: route['CURR_LOC_ID_TYP']})
+            if route['NEXT_LOC_ID'] not in route_type_dict:
+                route_type_dict.update({route['NEXT_LOC_ID']: route['NEXT_LOC_ID_TYP']})
+
+        return route_type_dict
+
+    @classmethod
     def _create_route_group(cls, route_master: list):
         route_loc_group_dict: dict = {}
 
@@ -422,15 +451,6 @@ class FactoryBuilder:
                 temp_list = route_loc_group_dict[route['CURR_LOC_ID']]
                 temp_list.append(route)
                 route_loc_group_dict[route['CURR_LOC_ID']] = temp_list
-
-        # for route in route_master:
-        #     if route['NEXT_LOC_ID'] == FactoryBuilder._end_location:
-        #         if route['NEXT_LOC_ID'] not in route_loc_group_dict.keys():
-        #             route_loc_group_dict.update({route['NEXT_LOC_ID']: [route]})
-        #         else:
-        #             temp_list = route_loc_group_dict[route['NEXT_LOC_ID']]
-        #             temp_list.append(route)
-        #             route_loc_group_dict[route['NEXT_LOC_ID']] = temp_list
 
         return route_loc_group_dict
 
@@ -463,7 +483,7 @@ class FactoryBuilder:
         return curr_to_next_route_dict
 
     @classmethod
-    def _create_location_route_list(cls, route_master: list):
+    def _create_route_loc_list(cls, route_master: list):
         """
 
         :param route_master:
@@ -486,6 +506,33 @@ class FactoryBuilder:
             idx += 1
 
         return route_naming_dict
+
+    @classmethod
+    def _create_prev_next_route_dict(cls, route_master: list, route_loc_list: list, entity_pointers: dict):
+        prev_route_dict = {}
+        next_route_dict = {}
+        for route_loc in route_loc_list:
+            for route in route_master:
+                # Check Previous Route
+                if route_loc == route['NEXT_LOC_ID']:
+                    if route_loc not in prev_route_dict.keys():
+                        value = entity_pointers[route['CURR_LOC_ID']]
+                        prev_route_dict.update({route_loc: [value]})
+                    else:
+                        temp_list = prev_route_dict[route_loc]
+                        if entity_pointers[route['CURR_LOC_ID']] not in temp_list:
+                            temp_list.append(entity_pointers[route['CURR_LOC_ID']])
+                # Check Next Route
+                if route_loc == route['CURR_LOC_ID']:
+                    if route_loc not in next_route_dict.keys():
+                        value = entity_pointers[route['NEXT_LOC_ID']]
+                        next_route_dict.update({route_loc: [value]})
+                    else:
+                        temp_list = next_route_dict[route_loc]
+                        if entity_pointers[route['NEXT_LOC_ID']] not in temp_list:
+                            temp_list.append(entity_pointers[route['NEXT_LOC_ID']])
+
+        return prev_route_dict, next_route_dict
 
     # =================================================================================================================
 

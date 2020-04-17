@@ -4,6 +4,7 @@ from math import floor
 # from m4.backward.BackwardManager import BackwardManager
 from m4.backward.BackwardStepPlan import BackwardStepPlan
 
+
 class BackwardWorkOrder(object):
 
     def __init__(self):
@@ -36,17 +37,21 @@ class BackwardWorkOrder(object):
 
         self.item_route_chain_dict = item_route_chain_dict
 
-    def process(self, peg_available_item_dict: dict, backward_step_plan_by_loc: dict):
+    def process(self, peg_available_item_dict: dict, backward_step_plan_by_loc: dict, peg_result_dict: dict):
         """
 
         :return:
         """
         self.backward_step_plan_list = self._create_backward_step_plan_list(peg_available_item_dict=peg_available_item_dict,
-                                                                            backward_step_plan_by_loc=backward_step_plan_by_loc)
+                                                                            backward_step_plan_by_loc=backward_step_plan_by_loc,
+                                                                            peg_result_dict=peg_result_dict)
 
         return self.backward_step_plan_list
 
-    def _create_backward_step_plan_list(self, peg_available_item_dict: dict, backward_step_plan_by_loc: dict):
+    def _create_backward_step_plan_list(self,
+                                        peg_available_item_dict: dict,
+                                        backward_step_plan_by_loc: dict,
+                                        peg_result_dict: dict):
         """
 
         :param inventory_item_list:
@@ -95,8 +100,9 @@ class BackwardWorkOrder(object):
             # Pegging
             if self.remain_production_qty > 0:
                 peg_qty, after_peg_item_dict = self._pegging(location_id=curr_loc_id,
-                                        item_id=curr_item_id,
-                                        peg_available_item_dict=after_peg_item_dict)
+                                                             item_id=curr_item_id,
+                                                             peg_available_item_dict=after_peg_item_dict,
+                                                             peg_result_dict=peg_result_dict)
 
                 # Update Pegging
                 plan.peg(peg_qty=peg_qty)
@@ -106,21 +112,27 @@ class BackwardWorkOrder(object):
 
         return backward_step_plan_list
 
-    def _pegging(self, location_id: str, item_id: str, peg_available_item_dict: dict):
+    def _pegging(self, location_id: str, item_id: str, peg_available_item_dict: dict, peg_result_dict: dict):
         peg_qty = 0
         key = (location_id, item_id)
         peg_available_item_list = peg_available_item_dict.get(key, [])
+        peg_result_item_list = peg_result_dict.get(key, [])
 
         if peg_available_item_list != []:
-            for peg_available_item in peg_available_item_list:
+            for peg_available_item, peg_result_item in zip(peg_available_item_list, peg_result_item_list):
                 if self.remain_production_qty >= peg_available_item['STOCK_QTY']:
                     self.remain_production_qty -= peg_available_item['STOCK_QTY']
                     peg_qty += peg_available_item['STOCK_QTY']
+
+                    peg_result_item['WORK_ORDER_ID'] = self.work_order_id
+                    peg_result_item['ORDER_ITEM_ID'] = self.finished_item_id
                     peg_available_item['STOCK_QTY'] = 0
-                    peg_available_item_list.remove(peg_available_item)
+                    # peg_available_item_list.remove(peg_available_item)
 
                 else:
                     peg_qty += self.remain_production_qty
+                    peg_result_item['WORK_ORDER_ID'] = self.work_order_id
+                    peg_result_item['ORDER_ITEM_ID'] = self.finished_item_id
                     peg_available_item['STOCK_QTY'] = round(peg_available_item['STOCK_QTY']- self.remain_production_qty, 3)     # 자리수 Hard Coding
                     self.remain_production_qty = 0
 

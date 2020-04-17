@@ -1,12 +1,13 @@
 import datetime
 
+from m4.constraint.AbstractConstraint import AbstractConstraint
 from m4.constraint.TimeConstraintDay import TimeConstraintDay
 from m4.constraint.TimeConstraintDaily import TimeConstraintDaily
 from m4.constraint.TimeConstraintWeekly import TimeConstraintWeekly
 from m4.constraint.TimeConstraintMonthly import TimeConstraintMonthly
 
 
-class ScheduleConstraint(object):
+class ScheduleConstraint(AbstractConstraint):
     """
     Schedule Constraint Object
     Schedule Constraint (비가용 계획) 정보 클래스
@@ -23,6 +24,8 @@ class ScheduleConstraint(object):
         """
         Schedule Constraint 생성자
         """
+        super().__init__("SCHDL", "Schedule Constraint", "SCHDL_CONST")
+
         # time constraints - priority 별로 저장
         self._time_constraints: list = []
 
@@ -44,7 +47,7 @@ class ScheduleConstraint(object):
 
         for time_constraints in self._time_constraints:
             for const in time_constraints:
-                ret: bool = const.check(date)
-                if ret:
-                    return const
+                ret: AbstractConstraint = const.check(date)
+                if ret is not None:
+                    return ret
         return None

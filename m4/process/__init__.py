@@ -1,4 +1,4 @@
 
 __all__ = {
-    'WorkOrder', 'Product'
+    'WorkOrder'
 }

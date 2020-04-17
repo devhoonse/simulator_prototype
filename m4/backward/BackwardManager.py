@@ -1,3 +1,5 @@
+import copy
+
 from m4.common.SingletonInstance import SingletonInstance
 from m4.backward.BackwardWorkOrder import BackwardWorkOrder
 
@@ -18,6 +20,7 @@ class BackwardManager(SingletonInstance):
         self._route_to_from_dict: dict = {}
         self._work_order_route_chain_dict: dict = {}
         self.peg_available_item_dict: dict = {}
+        self.peg_result_dict: dict = {}
 
         # Item + 위치 별 재공/재공 item list
         self.stock_wip_by_loc_dict: dict = {}
@@ -43,8 +46,10 @@ class BackwardManager(SingletonInstance):
         self._route_to_from_dict = self._create_route_to_from_dict()
         self._to_from_item_dict = self._create_to_from_item_dict()
         self._work_order_route_chain_dict = self._create_work_order_route_chain_dict()
-        self.peg_available_item_dict = self._create_peg_available_item_dict(inventory_item_list=inventory_item_list,
-                                                                            wip_list=wip_list)
+        peg_available_item_dict = self._create_peg_available_item_dict(inventory_item_list=inventory_item_list,
+                                                                       wip_list=wip_list)
+        self.peg_available_item_dict = peg_available_item_dict
+        self.peg_result_dict = copy.deepcopy(peg_available_item_dict)
         # self._work_order_route_dict = self._create_work_order_route_dict()
 
     def run(self):
@@ -59,10 +64,11 @@ class BackwardManager(SingletonInstance):
             backward_work_order.init(work_order=production_order,
                                      item_route_chain_dict=item_route_chain_dict)
             backward_step_plan_list = backward_work_order.process(peg_available_item_dict=self.peg_available_item_dict,
-                                                                  backward_step_plan_by_loc=self.backward_step_plan_by_loc)
+                                                                  backward_step_plan_by_loc=self.backward_step_plan_by_loc,
+                                                                  peg_result_dict=self.peg_result_dict)
             self.backward_step_plan_result.append(backward_step_plan_list)
 
-        return self.backward_step_plan_result, self.backward_step_plan_by_loc
+        return self.backward_step_plan_result, self.backward_step_plan_by_loc, self.peg_result_dict
 
     def _create_work_order_item_list(self):
         """
@@ -71,7 +77,7 @@ class BackwardManager(SingletonInstance):
         """
         work_order_item_list = []
 
-        for work_order in self._work_order_list :
+        for work_order in self._work_order_list:
             if work_order['ORDER_ITEM_ID'] not in work_order_item_list:
                 work_order_item_list.append(work_order['ORDER_ITEM_ID'])
 

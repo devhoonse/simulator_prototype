@@ -28,5 +28,5 @@ class LogHandler(SingletonInstance):
         logging.config.dictConfig(config)
         self._logger = logging.getLogger()
 
-    def get_logger(self):
+    def get_logger(self) -> logging.Logger:
         return self._logger

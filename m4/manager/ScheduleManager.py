@@ -166,3 +166,6 @@ class ScheduleManager(object):
         :return: int
         """
         return self._length
+
+    def get_start_date(self) -> datetime.datetime:
+        return self._start_date

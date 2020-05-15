@@ -42,8 +42,8 @@ class TimeConstraintDaily(AbstractConstraint):
         if self._start_date <= date < self._end_date:
             timedelta = datetime.timedelta(hours=date.hour, minutes=date.minute, seconds=date.second)
             if self._lower_bound <= timedelta < self._upper_bound:
-                return self # self
-        return None # None
+                return self
+        return None
 
     def get_factory_schedule_id(self):
         return self._factory_schedule_id

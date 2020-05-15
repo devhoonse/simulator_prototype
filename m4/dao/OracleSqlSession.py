@@ -89,10 +89,12 @@ class OracleSqlSession(AbstractSession):
         try:
             cursor = self._connection.cursor()
             cursor.executemany(sql_template, data_list)
+            self._connection.commit()
             return True
         except cx_Oracle.DatabaseError as e:
             error, = e.args
             error_code = error.code
+            print("Row", cursor.rowcount, "has error", error.message)
             raise DataSourceError("Oracle database execute Error", error_code)
 
     def execute_procedure(self, procedure_name: str, params):

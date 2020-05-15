@@ -1,0 +1,66 @@
+2020-04-23 09:28:02,981 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_00:DMD_1400 - fetched 100 from 1 items
+2020-04-23 09:28:02,981 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_00:DMD_1400 - fetched 100 from 1 items
+2020-04-23 09:28:02,986 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_01:DMD_1401 - fetched 100 from 1 items
+2020-04-23 09:28:02,986 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_01:DMD_1401 - fetched 100 from 1 items
+2020-04-23 09:28:02,987 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_11:DMD_1411 - fetched 100 from 1 items
+2020-04-23 09:28:02,988 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_11:DMD_1411 - fetched 100 from 1 items
+2020-04-23 09:28:02,990 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_02:DMD_1402 - fetched 100 from 1 items
+2020-04-23 09:28:02,990 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_02:DMD_1402 - fetched 100 from 1 items
+2020-04-23 09:28:02,991 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_12:DMD_1412 - fetched 100 from 1 items
+2020-04-23 09:28:02,992 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_12:DMD_1412 - fetched 100 from 1 items
+2020-04-23 09:28:02,994 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_03:DMD_1403 - fetched 100 from 1 items
+2020-04-23 09:28:02,994 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_03:DMD_1403 - fetched 100 from 1 items
+2020-04-23 09:28:02,995 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_14:DMD_1414 - fetched 100 from 1 items
+2020-04-23 09:28:02,996 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_14:DMD_1414 - fetched 100 from 1 items
+2020-04-23 09:28:02,998 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_04:DMD_1404 - fetched 100 from 1 items
+2020-04-23 09:28:02,999 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_04:DMD_1404 - fetched 100 from 1 items
+2020-04-23 09:28:03,001 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_15:DMD_1415 - fetched 100 from 1 items
+2020-04-23 09:28:03,001 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_15:DMD_1415 - fetched 100 from 1 items
+2020-04-23 09:28:03,005 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_05:DMD_1405 - fetched 100 from 1 items
+2020-04-23 09:28:03,005 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_05:DMD_1405 - fetched 100 from 1 items
+2020-04-23 09:28:03,008 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_16:DMD_1416 - fetched 100 from 1 items
+2020-04-23 09:28:03,008 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_16:DMD_1416 - fetched 100 from 1 items
+2020-04-23 09:28:03,012 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_06:DMD_1406 - fetched 100 from 1 items
+2020-04-23 09:28:03,012 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_06:DMD_1406 - fetched 100 from 1 items
+2020-04-23 09:28:03,014 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_17:DMD_1417 - fetched 100 from 1 items
+2020-04-23 09:28:03,015 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_17:DMD_1417 - fetched 100 from 1 items
+2020-04-23 09:28:03,018 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_07:DMD_1407 - fetched 100 from 1 items
+2020-04-23 09:28:03,019 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_07:DMD_1407 - fetched 100 from 1 items
+2020-04-23 09:28:03,021 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_18:DMD_1418 - fetched 100 from 1 items
+2020-04-23 09:28:03,021 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_18:DMD_1418 - fetched 100 from 1 items
+2020-04-23 09:28:03,025 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_08:DMD_1408 - fetched 100 from 1 items
+2020-04-23 09:28:03,025 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_08:DMD_1408 - fetched 100 from 1 items
+2020-04-23 09:28:03,027 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_19:DMD_1419 - fetched 100 from 1 items
+2020-04-23 09:28:03,027 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_19:DMD_1419 - fetched 100 from 1 items
+2020-04-23 09:28:03,033 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_09:DMD_1409 - fetched 100 from 1 items
+2020-04-23 09:28:03,033 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_09:DMD_1409 - fetched 100 from 1 items
+2020-04-23 09:28:03,037 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_20:DMD_1420 - fetched 100 from 1 items
+2020-04-23 09:28:03,037 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_20:DMD_1420 - fetched 100 from 1 items
+2020-04-23 09:28:03,042 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_10:DMD_1410 - fetched 100 from 1 items
+2020-04-23 09:28:03,042 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_10:DMD_1410 - fetched 100 from 1 items
+2020-04-23 09:28:03,044 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_22:DMD_1422 - fetched 100 from 1 items
+2020-04-23 09:28:03,045 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_22:DMD_1422 - fetched 100 from 1 items
+2020-04-23 09:28:03,050 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_13:DMD_1413 - fetched 100 from 1 items
+2020-04-23 09:28:03,050 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_13:DMD_1413 - fetched 100 from 1 items
+2020-04-23 09:28:03,053 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_14_23:DMD_1423 - fetched 100 from 1 items
+2020-04-23 09:28:03,054 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_23:DMD_1423 - fetched 100 from 1 items
+2020-04-23 09:28:03,059 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_14_21:DMD_1421 - fetched 100 from 1 items
+2020-04-23 09:28:03,059 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_14_21:DMD_1421 - fetched 100 from 1 items
+2020-04-23 09:28:03,131 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_20_00:DMD_2000 - fetched 100 from 1 items
+2020-04-23 09:28:03,131 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_00:DMD_2000 - fetched 100 from 1 items
+2020-04-23 09:28:03,147 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_20_01:DMD_2001 - fetched 100 from 1 items
+2020-04-23 09:28:03,147 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_01:DMD_2001 - fetched 100 from 1 items
+2020-04-23 09:28:03,153 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_20_11:DMD_2011 - fetched 100 from 1 items
+2020-04-23 09:28:03,154 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_11:DMD_2011 - fetched 100 from 1 items
+2020-04-23 09:28:03,166 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_20_02:DMD_2002 - fetched 100 from 1 items
+2020-04-23 09:28:03,166 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_02:DMD_2002 - fetched 100 from 1 items
+2020-04-23 09:28:03,172 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_20_12:DMD_2012 - fetched 100 from 1 items
+2020-04-23 09:28:03,172 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_12:DMD_2012 - fetched 100 from 1 items
+2020-04-23 09:28:03,182 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_20_03:DMD_2003 - fetched 100 from 1 items
+2020-04-23 09:28:03,183 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_03:DMD_2003 - fetched 100 from 1 items
+2020-04-23 09:28:03,191 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_20_14:DMD_2014 - fetched 100 from 1 items
+2020-04-23 09:28:03,192 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_14:DMD_2014 - fetched 100 from 1 items
+2020-04-23 09:28:03,206 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD1:M1] : ITEM_20_04:DMD_2004 - fetched 100 from 1 items
+2020-04-23 09:28:03,207 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_04:DMD_2004 - fetched 100 from 1 items
+2020-04-23 09:28:03,214 - INFO ProcessLot.py-fetch : [Process Lot REACTOR:LDMD2:M2] : ITEM_20_15:DMD_2015 - fetched 100 from 1 items
+2020-04-23 09:28:03,214 - INFO Process.py-fetch : [Process REACTOR:REACTOR] : ITEM_20_15:DMD_2015 - fetched 100 from 1 items

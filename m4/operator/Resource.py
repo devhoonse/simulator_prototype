@@ -12,6 +12,7 @@ class Resource(object):
     실제 처리 동작을 수행하도록 설계
     """
     STATUS_IDLE: str = "IDLE"
+    STATUS_SETUP: str = "SETUP"
     STATUS_PROCESSING: str = "PROC"
     STATUS_DOWN: str = "DOWN"
 

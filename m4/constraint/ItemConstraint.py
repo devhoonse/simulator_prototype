@@ -30,12 +30,13 @@ class ItemConstraint(AbstractConstraint):
         total_quantity: float = 0
         for item in stock:
             total_quantity = total_quantity + item.get_quantity()
-        if 0 < total_quantity + quantity <= self._max_quantity*self._load_rate:
-            return None
+        if total_quantity + quantity > self._max_quantity * self._load_rate:
+            return self
 
-        return self
+        return None
 
     def get_item_id(self):
         return self._item_id
 
-
+    def get_actual_max_quantity(self):
+        return self._max_quantity * self._load_rate
